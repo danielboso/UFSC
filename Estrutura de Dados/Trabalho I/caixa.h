@@ -1,5 +1,5 @@
 
-class Caixa {
+class Caixa : CircularList<Cliente> {
 
 public:
 	caixa();
