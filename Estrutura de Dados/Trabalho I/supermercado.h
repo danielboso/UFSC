@@ -2,7 +2,7 @@
 class supermercado : CircularList<Caixa>{
 
 public:
-	supermercado();
+	supermercado(int numeroCaixas, int tempoMedioChegadaClientes, int tempoDeSimulacaoHoras, );
 	~supermercado();
 	
 };
