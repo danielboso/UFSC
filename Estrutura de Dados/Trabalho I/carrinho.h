@@ -1,13 +1,13 @@
 #include <stdlib.h>
-
+#include "src/linked_stack.h"
 class Carrinho : LinkedStack<int> {
 
 public:
-	carrinho() {
+	Carrinho() {
 		setaQuantidadeProdutos();
 		setaPrecoProdutos();
 	}
-	~carrinho();
+	~Carrinho();
 
 	int quantidadeProdutos;
 
@@ -17,7 +17,15 @@ public:
 
 	void setaPrecoProdutos() {
 		for (int i = 0; i < quantidadeProdutos; i ++) {
-			Carrinho::push(rand()%89 + 1);
+			LinkedStack::push(rand()%89 + 1);
 		}
+	}
+
+	int totalCompra() {
+		int totalCompra = 0;
+		for (int i = 0; i < quantidadeProdutos; i ++) {
+			totalCompra += LinkedStack::pop();
+		}
+		return totalCompra;
 	}
 };
