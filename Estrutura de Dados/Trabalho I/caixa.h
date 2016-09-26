@@ -1,16 +1,18 @@
 
+#include "src/circular_list.h"
+
 class Caixa : CircularList<Cliente> {
 
 public:
-	caixa();
-	~caixa();
+	Caixa();
+	~Caixa();
 	
 	// Ponteiro para fila de cliente
-	int numeroClientesFila;
-	int numeroClientesAtendidos;
-	int tempoMedioDeEspera;
-	int faturamentoTotal;
-	int faturamentoMedio;
-	string 	identificador;
+	int numeroClientesFila = 0;
+	int numeroClientesAtendidos = 0;
+	int tempoMedioDeEspera = 0;
+	int faturamentoMedio = 0;
+	char identificador;
 	int eficiencia;
+	int lucroDoCaixa = 0;
 };
