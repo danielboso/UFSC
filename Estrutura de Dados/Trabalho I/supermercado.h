@@ -1,15 +1,38 @@
 
-class supermercado : CircularList<Caixa>{
+class Supermercado : CircularList<Caixa>{
 
 public:
-	supermercado(int numeroCaixas, int tempoMedioChegadaClientes, int tempoDeSimulacaoHoras, ) {
+
+	int numeroCaixas;
+	int tempoMediaChegadaClientes;
+	int tempoSimulacaoHoras;
+	int tempoSimulacaoSegundos = 3600 * tempoSimulacaoHoras;
+	int tempoDecorrido = 0;
+
+	// Estatísticas
+
+	Supermercado() {
 
 	}
 
-	supermercado() {
-		// pegar informações do arquivo
+	Supermercado(int numeroCaixas, int tempoMediaChegadaClientes, int tempoSimulacaoHoras) {
+		this->numeroCaixas = numeroCaixas;
+		this->tempoMediaChegadaClientes = tempoMediaChegadaClientes;
+		this->tempoSimulacaoHoras = tempoSimulacaoHoras;
 	}
-
-	~supermercado();
 	
+	int main(int argc, char const *argv[]) {
+		CircularList<Caixa> *caixas;
+
+		while(tempoDecorrido <= tempoSimulacaoSegundos) {
+
+			//Instancia caixas
+			for (int i = 0; i < numeroCaixas; i ++) {
+				Caixa caixa;
+				caixa = new Caixa();
+			}
+		}
+	}
+
+
 };
