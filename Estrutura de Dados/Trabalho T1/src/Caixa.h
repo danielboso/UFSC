@@ -1,6 +1,7 @@
 #include "Cliente.h"
+#include "estruturasDeDados/LinkedQueue.h"
 
-class Caixa : public structures::LinkedStack<Cliente>{
+class Caixa : public structures::LinkedQueue<Cliente>{
 
 public:
 	int numeroClientesFila = 0;
@@ -11,7 +12,7 @@ public:
 	int eficiencia = 0;
 	int lucroDoCaixa = 0;
 
-	Caixa() : structures::LinkedStack<Cliente>::LinkedStack(){}
+	Caixa() : structures::LinkedQueue<Cliente>::LinkedQueue(){}
 
 	~Caixa();
 
@@ -29,9 +30,5 @@ public:
 
 	void calculaFaturamentoMedio(int valor) {
 		faturamentoMedio = (faturamentoMedio + valor)/2;
-	}
-
-	void adicionaClienteNaFila(Cliente cliente) {
-		//clientes
 	}
 };
