@@ -4,8 +4,8 @@
  *  \Released under the GNU General Public License 2.0
  */
 
-#ifndef SUPERMERCADO_STRUCTURES_NODE_HPP_
-#define SUPERMERCADO_STRUCTURES_NODE_HPP_
+#ifndef STRUCTURES_NODE_HPP_
+#define STRUCTURES_NODE_HPP_
 
 namespace structures {
 
