@@ -1,5 +1,5 @@
-//  !	Classe Cliente.
-/*	!
+//! Classe LinkedQueue.
+/*!
  *  \Copyright (C) 2016  Adan Pereira Gomes and Daniel Boso
  *  \Released under the GNU General Public License 2.0
  */
@@ -16,23 +16,23 @@ namespace structures {
 
 //! Classe LinkedQueue | FilaEncadeada
 /*!
- *	Tipo de estrutura conhecida por FIFO.
- *	A Fila funciona de maneira que os dados entram por tras e saem pela frente.
- *	Esta classe e capaz de alocar dinamicamente memoria conforme necessario.
+ * Tipo de estrutura conhecida por FIFO.
+ * A Fila funciona de maneira que os dados entram por tras e saem pela frente.
+ * Esta classe e capaz de alocar dinamicamente memoria conforme necessario.
  */
 template<typename T>
 class LinkedQueue {
  public:
-	//! Construtor Padrão.
-	/*!	Usado para criar estrutura com tamanho padrão.	*/
+    //! Construtor Padrão.
+    /*!	Usado para criar estrutura com tamanho padrão.	*/
     LinkedQueue() {}
 
     //! Destrutor.
-	/*!	Destroi todos os dados relacionados a classe e devolve a memoria ao SO.	*/
+    /*!	Destroi todos os dados relacionados a classe e devolve a memoria ao SO.	*/
     ~LinkedQueue() { clear(); }
 
     //! Função membro clear | limpa.
-	/*!	Responsavel por limpar estrutura de forma a ser reutilizada.	*/
+    /*!	Responsavel por limpar estrutura de forma a ser reutilizada.	*/
     void clear() {
     	while (!empty()) {
     		dequeue();
@@ -40,10 +40,10 @@ class LinkedQueue {
     }
 
     //! Função membro enqueue | enfilerar.
-	/*!	Responsavel por inserir novos dados ao final da estrutura.
-	 *	\param data um tipo T contante que sera armazenado
-	 *	\sa dequeue()
-	 */
+    /*!	Responsavel por inserir novos dados ao final da estrutura.
+     *	\param data um tipo T contante que sera armazenado
+     *	\sa dequeue()
+     */
     void enqueue(const T& data) {
     	Node<T>* tmp = new Node(data, nullptr);
     	if (tmp == nullptr) {
@@ -60,10 +60,10 @@ class LinkedQueue {
     }
 
     //! Função membro dequeue | desenfilerar.
-	/*!	Responsavel por remover o dado do primeiro elemento.
-	 *	\return um tipo T armazenado por ultimo.
-	 *	\sa enqueue()
-	 */
+    /*!	Responsavel por remover o dado do primeiro elemento.
+     *	\return um tipo T armazenado por ultimo.
+     *	\sa enqueue()
+     */
     T dequeue() {
     	if (empty()) {
     		throw std::out_of_range("Erro: Estrutura vazia.");
@@ -78,38 +78,38 @@ class LinkedQueue {
     }
 
     //! Função membro front | primeiro.
-	/*!	Getter do elemento que se encontra na primeira posicao.
-	 *	\return um T&.
-	 */
+    /*!	Getter do elemento que se encontra na primeira posicao.
+     *	\return um T&.
+     */
     T& front() { return head->data(); }
 
     //! Função membro back | ultimo.
-	/*!	Getter do elemento que se encontra na ultima posicao.
-	 *	\return um T&.
-	 */
+    /*!	Getter do elemento que se encontra na ultima posicao.
+     *	\return um T&.
+     */
     T& back() { return tail->data(); }
 
     //! Função membro empty | vazia.
-	/*!	Testa se a estrutura esta vazia.
-	 *	\return um bool.
-	 *	\sa full()
-	 */
+    /*!	Testa se a estrutura esta vazia.
+     *	\return um bool.
+     *	\sa full()
+     */
     bool empty() const {return size_ == 0; }
 
     //! Função membro size | tamanho.
-	/*!	Indica o tamanho atual da estrutura.
-	 *	\return um std::size_t.
-	 *	\sa max_size()
-	 */
+    /*!	Indica o tamanho atual da estrutura.
+     *	\return um std::size_t.
+     *	\sa max_size()
+     */
     std::size_t size() const { return size_; }
 
  private:
     //! Variavel privada head .
-	/*!	Ponteiro para o primeiro elemento.	*/
+    /*!	Ponteiro para o primeiro elemento.	*/
     Node<T>* head { nullptr };
 
     //! Variavel privada tail .
-	/*!	Ponteiro para o ultimo elemento.	*/
+    /*!	Ponteiro para o ultimo elemento.	*/
     Node<T>* tail { nullptr };
 
     //! Variavel privada size_ .
