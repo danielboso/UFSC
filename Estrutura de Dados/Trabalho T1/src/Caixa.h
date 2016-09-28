@@ -1,6 +1,6 @@
 #include "Cliente.h"
 
-class Caixa : LinkedStack<Cliente>{
+class Caixa : public structures::LinkedStack<Cliente>{
 
 public:
 	int numeroClientesFila = 0;
@@ -8,12 +8,10 @@ public:
 	int tempoMedioDeEspera = 0;
 	int faturamentoMedio = 0;
 	char identificador[100];
-	int eficiencia;
+	int eficiencia = 0;
 	int lucroDoCaixa = 0;
 
-	Caixa(): LinkedStack(){
-
-	}
+	Caixa() : structures::LinkedStack<Cliente>::LinkedStack(){}
 
 	~Caixa();
 
