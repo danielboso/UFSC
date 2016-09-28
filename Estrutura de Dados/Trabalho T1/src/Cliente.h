@@ -11,13 +11,13 @@ namespace supermercado {
 
 class Cliente {
 public:
-	Cliente(bool cheque, int itens, int total) :
-		cheque_{ cheque }, itens_{ itens }, total_{ total } {
+	Cliente(bool cartao, int itens, int total) :
+		cartao_{ cartao }, itens_{ itens }, total_{ total } {
 	}
 
 	~Cliente();
 private:
-	bool cheque_;
+	bool cartao_;
 	int itens_;
 	int total_;
 };
