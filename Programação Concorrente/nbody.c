@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 /*
  * pRNG based on http://www.cs.wm.edu/~va/software/park/park.html
@@ -12,6 +14,11 @@
 
 static long seed = DEFAULT;
 double dt, dt_old; /* Alterado de static para global */
+
+// -------------------- Alterado -------------------------
+int numeroThreads;
+sem_t semaforoInit;
+// -------------------------------------------------------
 
 double Random(void)
 /* ----------------------------------------------------------------
@@ -58,23 +65,29 @@ int main(int argc, char **argv)
     int         cnt;         /* number of times in loop */
     double      sim_t;       /* Simulation time */
     int tmp;
-    if(argc != 3){
+    if(argc != 4){
 		printf("Wrong number of parameters.\nUsage: nbody num_bodies timesteps\n");
 		exit(1);
 	}
     
 	npart = atoi(argv[1]);
 	cnt = atoi(argv[2]);
+	numeroThreads = atoi(argv[3]);
 	dt = 0.001; 
 	dt_old = 0.001;
 
     /* Allocate memory for particles */
     particles = (Particle *) malloc(sizeof(Particle)*npart);
     pv = (ParticleV *) malloc(sizeof(ParticleV)*npart);
-    
+	
+
+    sem_init(&semaforoInit, 0, numeroThreads);
     /* Generate the initial values */
     InitParticles( particles, pv, npart);
-    sim_t = 0.0;
+    
+	sim_t = 0.0;
+
+
 
     while (cnt--) {
       double max_f;
@@ -83,15 +96,18 @@ int main(int argc, char **argv)
       /* Once we have the forces, we compute the changes in position */
       sim_t += ComputeNewPos( particles, pv, npart, max_f);
     }
-    for (i=0; i<npart; i++)
-      fprintf(stdout,"%.5lf %.5lf\n", particles[i].x, particles[i].y);
-    return 0;
-}
 
-void InitParticles( Particle particles[], ParticleV pv[], int npart )
-{
-    int i;
-    for (i=0; i<npart; i++) {
+    
+    //for (i=0; i<npart; i++)
+    //  fprintf(stdout,"%.5lf %.5lf\n", particles[i].x, particles[i].y);
+    //return 0;
+
+
+    // -------------------- Alterado -------------------------
+    sem_destroy(&semaforoInit);
+    // -------------------------------------------------------
+}
+void *ThreadInitParticles(Particle particles[], ParticleV pv[], int i) {
 	particles[i].x	  = Random();
 	particles[i].y	  = Random();
 	particles[i].z	  = Random();
@@ -102,7 +118,47 @@ void InitParticles( Particle particles[], ParticleV pv[], int npart )
 	pv[i].fx	  = 0;
 	pv[i].fy	  = 0;
 	pv[i].fz	  = 0;
-    }
+}
+
+void InitParticles( Particle particles[], ParticleV pv[], int npart )
+{	
+	// -------------------- Alterado -------------------------
+	sem_wait(&semaforoInit);
+	// -------------------------------------------------------
+	pthread_t threads[npart];
+	/*
+	struct arg_Init {
+    	Particle particles[]; 
+    	ParticleV pv[]; 
+    	int i;
+	};*/
+
+	typedef struct arg_Init {
+    	Particle particles[]; 
+    	ParticleV pv[]; 
+    	int i;
+	} arg_Init;
+
+	struct arg_Init *argInit;
+	
+
+	for (int i = 0; i < npart; i ++) {
+
+	}
+	
+
+	for (int i = 0; i < npart; i ++) {
+		
+		pthread_create(&threads[i], NULL, ThreadInitParticles, (void *)arg_Init);
+	}
+    
+	for (int i = 0; i < npart; i ++) {
+		pthread_join(threads[i], NULL);
+	}
+	// -------------------- Alterado -------------------------
+	sem_post(&semaforoInit);
+	// -------------------------------------------------------
+
 }
 
 double ComputeForces( Particle myparticles[], Particle others[], ParticleV pv[], int npart )
