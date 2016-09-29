@@ -1,88 +1,122 @@
-//! Descrição do arquivo
+//! Classe LinkedQueue.
 /*!
- *  \author Daniel Boso
- *  \since 11/09/2016
- *  \version 1.0
- *  \copyright General Public License version 2
+ *  \Copyright (C) 2016  Adan Pereira Gomes and Daniel Boso
+ *  \Released under the GNU General Public License 2.0
  */
-#include "LinkedList.h"
+
+#ifndef STRUCTURES_LINKED_QUEUE_H
+#define STRUCTURES_LINKED_QUEUE_H
+
+#include <cstdint>
+#include <stdexcept>
+
+#include "./Node.hpp"
 
 namespace structures {
 
+//! Classe LinkedQueue | FilaEncadeada
+/*!
+ * Tipo de estrutura conhecida por FIFO.
+ * A Fila funciona de maneira que os dados entram por tras e saem pela frente.
+ * Esta classe e capaz de alocar dinamicamente memoria conforme necessario.
+ */
 template<typename T>
 class LinkedQueue {
-public:
-    //! Construtor
-    LinkedQueue(): list{} {
+ public:
+    //! Construtor Padrão.
+    /*!	Usado para criar estrutura com tamanho padrão.	*/
+    LinkedQueue() {}
 
+    //! Destrutor.
+    /*!	Destroi todos os dados relacionados a classe e devolve a memoria ao SO.	*/
+    ~LinkedQueue() { clear(); }
+
+    //! Função membro clear | limpa.
+    /*!	Responsavel por limpar estrutura de forma a ser reutilizada.	*/
+    void clear() {
+    	while (!empty()) {
+    		dequeue();
+    	}
     }
 
-    //! Destrutor
-    ~LinkedQueue() {
-
+    //! Função membro enqueue | enfilerar.
+    /*!	Responsavel por inserir novos dados ao final da estrutura.
+     *	\param data um tipo T contante que sera armazenado
+     *	\sa dequeue()
+     */
+    void enqueue(const T& data) {
+    	Node<T>* tmp = new Node(data, nullptr);
+    	if (tmp == nullptr) {
+    		throw std::out_of_range("Erro: Estrutura vazia.");
+    	} else if (empty()) {
+    		head = tmp;
+    		tail = head;
+    		++size_;
+    	} else {
+    		tail->next(tmp);
+    		tail = tmp;
+    		++size_;
+    	}
     }
 
-     //! Função clear
-    /*!
-        "Limpa" todo conteúdo da fila.
-    */
-    void clear() {  // limpar
-        list.clear();
+    //! Função membro dequeue | desenfilerar.
+    /*!	Responsavel por remover o dado do primeiro elemento.
+     *	\return um tipo T armazenado por ultimo.
+     *	\sa enqueue()
+     */
+    T dequeue() {
+    	if (empty()) {
+    		throw std::out_of_range("Erro: Estrutura vazia.");
+    	} else {
+    		Node<T>* out = head;
+    		T data = out->data();
+    		head = out->next();
+    		--size_;
+    		delete out;
+    		return data;
+    	}
     }
 
-    //! Função enqueue
-    /*!
-        Adicionar novos elementos no final fila.
-        \param data é o dado a ser adicionado na fila.
-    */
-    void enqueue(const T& data) {  // enfilerar
-        list.push_back(data);
-    }
+    //! Função membro front | primeiro.
+    /*!	Getter do elemento que se encontra na primeira posicao.
+     *	\return um T&.
+     */
+    T& front() { return head->data(); }
 
-    //! Função dequeue
-    /*!
-        Função para tirar o primeiro elemento da fila e mostrá-lo.
-        \return mostra o primeiro elemento da fila.
-    */
-    T dequeue() {  // desenfilerar
-        return list.pop_front();
-    }
+    //! Função membro back | ultimo.
+    /*!	Getter do elemento que se encontra na ultima posicao.
+     *	\return um T&.
+     */
+    T& back() { return tail->data(); }
 
-    //! Função back
-    /*!
-        \return elemento que está no início da fila.
-    */
-    T& front() const {  // primeiro dado
-        return list.at(0);
-    }
+    //! Função membro empty | vazia.
+    /*!	Testa se a estrutura esta vazia.
+     *	\return um bool.
+     *	\sa full()
+     */
+    bool empty() const {return size_ == 0; }
 
-    //! Função back
-    /*!
-        \return elemento que está no final da fila.
-    */
-    T& back() const {  // último dado
-        return list.at(list.size()-1);
-    }
+    //! Função membro size | tamanho.
+    /*!	Indica o tamanho atual da estrutura.
+     *	\return um std::size_t.
+     *	\sa max_size()
+     */
+    std::size_t size() const { return size_; }
 
-    //! Função empty
-    /*! 
-        Verifica se a fila está cheia ou vazia.
-        \return bool. Verdadeiro caso a fila está vazia e falso caso contrário.
-    */
-    bool empty() const {  // fila vazia
-        return list.empty();
-    }
+ private:
+    //! Variavel privada head .
+    /*!	Ponteiro para o primeiro elemento.	*/
+    Node<T>* head { nullptr };
 
-    //! Função size
-    /*!
-        \return tamanho da pilha.
-    */
-    std::size_t size() const {  // tamanho
-        return list.size();
-    }
+    //! Variavel privada tail .
+    /*!	Ponteiro para o ultimo elemento.	*/
+    Node<T>* tail { nullptr };
 
-private:
-    LinkedList<T> list;
+    //! Variavel privada size_ .
+    /*!	Responsavel por armazenar o indice do ultimo elemento armazenado.	*/
+    std::size_t size_ { 0u };
 };
 
 }
+
+#endif // namespace structures
