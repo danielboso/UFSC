@@ -4,6 +4,10 @@
  *  \Released under the GNU General Public License 2.0
  */
 
+#include <cstdlib>
+
+//#include "./Cliente.h"
+
 namespace supermercado {
 
 Cliente::Cliente() {}
@@ -15,10 +19,16 @@ Cliente::Cliente(int tempo_chegada) :
 Cliente::~Cliente() {}
 
 void Cliente::gera_quantidade_itens() {
-
+	std::srand(tempo_chegada_);
+	quantidade_itens_ = (rand() % 99) + 2;
 }
 
-void Cliente::gera_valor_total() {}
+void Cliente::gera_valor_total() {
+	for (int i = 0; i != quantidade_itens_; ++i) {
+		std::srand(tempo_chegada_);  // Alterar o argumento pro srand() alterar a seed
+		valor_total_ += (rand() % 90) + 1;
+	}
+}
 
 const int Cliente::tempo_chegada() const { return tempo_chegada_; }
 
