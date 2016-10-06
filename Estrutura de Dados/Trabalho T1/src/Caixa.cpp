@@ -30,6 +30,14 @@ void Caixa::adicionaNumeroClientesDesistiram() {
 	numeroClientesDesistiram_++;
 }
 
+void Caixa::adicionaNumeroProdutosParaCaixaPassar(int numeroProdutos) {
+	numeroProdutosParaCaixaPassar_ += numeroProdutos;
+}
+
+void Caixa::removeNumeroProdutosParaCaixaPassar(int numeroProdutos) {
+	numeroProdutosParaCaixaPassar_-= numeroProdutos;
+}
+
 void Caixa::calculaTempoMedioEspera(int tempo) {
 	tempoMedioDeEspera_ = (tempoMedioDeEspera_ + tempo)/2;
 }
