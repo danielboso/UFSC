@@ -1,34 +1,46 @@
-#include "Cliente.h"
-#include "estruturasDeDados/LinkedQueue.h"
+//  !	Classe Caixa.
+/*	!
+ *  \Copyright (C) 2016  Adan Pereira Gomes and Daniel Boso
+ *  \Released under the GNU General Public License 2.0
+ */
 
-class Caixa : public structures::LinkedQueue<Cliente>{
+#ifndef SRC_CAIXA_H_
+#define SRC_CAIXA_H_
+
+namespace supermercado {
+
+class Caixa {
 
 public:
-	int numeroClientesFila = 0;
-	int numeroClientesAtendidos = 0;
-	int tempoMedioDeEspera = 0;
-	int faturamentoMedio = 0;
-	char identificador[100];
-	int eficiencia = 0;
-	int lucroDoCaixa = 0;
-
-	Caixa() : structures::LinkedQueue<Cliente>::LinkedQueue(){}
+	Caixa();
 
 	~Caixa();
 
-	void adicionaNumeroClientesNaFila() {
-		numeroClientesFila++;
-	}
+	void adicionaNumeroClientesNaFila();
 
-	void adicionaNumeroClientesAtendidos() {
-		numeroClientesAtendidos++;
-	}
+	void retiraNumeroClientesNaFila();
 
-	void calculaTempoMedioEspera(int tempo) {
-		tempoMedioDeEspera = (tempoMedioDeEspera + tempo)/2;
-	}
+	void adicionaNumeroClientesAtendidos();
 
-	void calculaFaturamentoMedio(int valor) {
-		faturamentoMedio = (faturamentoMedio + valor)/2;
-	}
+	void calculaTempoMedioEspera(int);
+
+	void calculaFaturamentoMedio(int);
+
+	void calculaLucroCaixa(int);
+
+	void adicionaFaturamento(int);
+
+private:
+	int numeroClientesFila_{0};
+	int numeroClientesAtendidos_{0};
+	int tempoMedioDeEspera_{0};
+	int faturamentoMedio_{0};
+	int eficiencia_{0};
+	int faturamento_{0};
+	int salario_{0};
+	int lucroDoCaixa_{0};
 };
+
+}  // namespace supermercado
+
+#endif /* SRC_CAIXA_H_ */
