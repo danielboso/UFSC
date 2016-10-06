@@ -9,6 +9,7 @@
 
 namespace supermercado {
 
+
 class Caixa {
 
 public:
@@ -24,6 +25,10 @@ public:
 
 	void adicionaNumeroClientesDesistiram();
 
+	void adicionaNumeroProdutosParaCaixaPassar(int);
+
+	void removeNumeroProdutosParaCaixaPassar(int);
+
 	void calculaTempoMedioEspera(int);
 
 	void calculaFaturamentoMedio(int);
@@ -38,6 +43,7 @@ private:
 	int numeroClientesFila_{0};
 	int numeroClientesAtendidos_{0};
 	int numeroClientesDesistiram_{0};
+	int numeroProdutosParaCaixaPassar_{0};
 	int tempoMedioDeEspera_{0};
 	int faturamentoMedio_{0};
 	int eficiencia_{0};
