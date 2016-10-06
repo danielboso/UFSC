@@ -22,9 +22,13 @@ public:
 
 	void adicionaNumeroClientesAtendidos();
 
+	void adicionaNumeroClientesDesistiram();
+
 	void calculaTempoMedioEspera(int);
 
 	void calculaFaturamentoMedio(int);
+
+	void adicionaFaturamentoPerdido(int);
 
 	void calculaLucroCaixa(int);
 
@@ -33,10 +37,12 @@ public:
 private:
 	int numeroClientesFila_{0};
 	int numeroClientesAtendidos_{0};
+	int numeroClientesDesistiram_{0};
 	int tempoMedioDeEspera_{0};
 	int faturamentoMedio_{0};
 	int eficiencia_{0};
 	int faturamento_{0};
+	int faturamentoPerdido_{0};
 	int salario_{0};
 	int lucroDoCaixa_{0};
 };
