@@ -1,42 +1,32 @@
-#include "Caixa.h"
-#include "estruturaDeDados/circular_list.h"
+//  !	Classe Caixa.
+/*	!
+ *  \Copyright (C) 2016  Adan Pereira Gomes and Daniel Boso
+ *  \Released under the GNU General Public License 2.0
+ */
 
-class Supermercado : CircularList<Caixa>(){
+#ifndef SRC_SUPERMERCADO_H_
+#define SRC_SUPERMERCADO_H_
 
+namespace supermercado {
+
+class Supermercado {
 public:
+	Supermercado(int, int , int);
 
-	int numeroCaixas;
-	int tempoMediaChegadaClientes;
-	int tempoSimulacaoHoras;
-	int tempoSimulacaoSegundos = 3600 * tempoSimulacaoHoras;
-	int tempoDecorrido = 0;
+	void calculaIntervaloTempoChegadaProximoCliente();
 
-	// Estatísticas
+	void iniciarSimulacao();
 
-	Supermercado(): CircularList() {
-
-	}
-
-	Supermercado(int numeroCaixas, int tempoMediaChegadaClientes, int tempoSimulacaoHoras) {
-		this->numeroCaixas = numeroCaixas;
-		this->tempoMediaChegadaClientes = tempoMediaChegadaClientes;
-		this->tempoSimulacaoHoras = tempoSimulacaoHoras;
-	}
-	
-	int main(int argc, char const *argv[]) {
-		CircularList<Caixa> *caixas;
-
-		//Instancia caixas
-		for (int i = 0; i < numeroCaixas; i ++) {
-			Caixa caixa= new Caixa();
-
-		}
-
-		while(tempoDecorrido <= tempoSimulacaoSegundos) {
-
-
-		}
-	}
-
-
+private:
+		int numeroCaixas_{0};
+		int tempoMediaChegadaClientes_{0};
+		int tempoSimulacaoHoras_{0};
+		int tempoSimulacaoSegundos_{0};
+		int tempoDecorrido_{0};
+		int tempoParaInserirNovoCliente_{0};
+		structures::CircularList<Caixa> *caixas_;
 };
+
+}
+
+#endif /* SRC_SUPERMERCADO_H_ */
