@@ -3,6 +3,7 @@
  *  \Copyright (C) 2016  Adan Pereira Gomes and Daniel Boso
  *  \Released under the GNU General Public License 2.0
  */
+
 #include "Caixa.h"
 
 namespace supermercado {
@@ -25,12 +26,20 @@ void Caixa::adicionaNumeroClientesAtendidos() {
 	numeroClientesAtendidos_++;
 }
 
+void Caixa::adicionaNumeroClientesDesistiram() {
+	numeroClientesDesistiram_++;
+}
+
 void Caixa::calculaTempoMedioEspera(int tempo) {
 	tempoMedioDeEspera_ = (tempoMedioDeEspera_ + tempo)/2;
 }
 
 void Caixa::calculaFaturamentoMedio(int valor) {
 	faturamentoMedio_ = (faturamentoMedio_ + valor)/2;
+}
+
+void Caixa::adicionaFaturamentoPerdido(int valor) {
+	faturamentoPerdido_+= (3*valor);
 }
 
 void Caixa::calculaLucroCaixa(int tempoSimulacaoHoras) {
