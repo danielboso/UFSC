@@ -8,54 +8,49 @@
 
 namespace supermercado {
 
-Caixa::Caixa() {
-	//char identificador[100];
+Caixa::Caixa(char* identificador, unsigned eficiencia, unsigned salario) :
+		identificador_{identificador},
+		eficiencia_{eficiencia},
+		salario_{salario}
+{
+	clientes_ = new structures::LinkedQueue<Cliente>();
 }
 
 Caixa::~Caixa() {}
 
-void Caixa::adicionaNumeroClientesNaFila() {
-	numeroClientesFila_++;
+const std::ostream& Caixa::operator<<(std::ostream& saida) const {
+	return saida << "Caixa (" <<
+			"\n\tidentificador: " 		<< identificador_ 		<<
+			"\n\teficiencia: " 			<< eficiencia_ 			<<
+			"\n\tsalario: " 			<< salario_ 			<<
+			"\n\tprodutos_pendentes: " 	<< produtos_pendentes_ 	<<
+			"\n\tclientes_atendidos: " 	<< clientes_atendidos_ 	<<
+			"\n\tfaturamento_medio: " 	<< faturamento_medio_ 	<<
+			"\n\tfaturamento_total: " 	<< faturamento_total_ 	<<
+			"\n\ttempo_espera_medio: " 	<< tempo_espera_medio_ 	<<
+			"\n)";
 }
 
-void Caixa::retiraNumeroClientesNaFila() {
-	numeroClientesFila_--;
-}
+const char* Caixa::identificador() const { return identificador_; }
 
-void Caixa::adicionaNumeroClientesAtendidos() {
-	numeroClientesAtendidos_++;
-}
+const unsigned Caixa::eficiencia() const { return eficiencia_; }
 
-void Caixa::adicionaNumeroClientesDesistiram() {
-	numeroClientesDesistiram_++;
-}
+const unsigned Caixa::salario() const { return salario_; }
 
-void Caixa::adicionaNumeroProdutosParaCaixaPassar(int numeroProdutos) {
-	numeroProdutosParaCaixaPassar_ += numeroProdutos;
-}
+const unsigned Caixa::produtos_pendentes() const { return produtos_pendentes_; }
 
-void Caixa::removeNumeroProdutosParaCaixaPassar(int numeroProdutos) {
-	numeroProdutosParaCaixaPassar_-= numeroProdutos;
-}
+const unsigned Caixa::clientes_fila() const { return clientes_->size(); }
 
-void Caixa::calculaTempoMedioEspera(int tempo) {
-	tempoMedioDeEspera_ = (tempoMedioDeEspera_ + tempo)/2;
-}
+const unsigned Caixa::clientes_atendidos() const { return clientes_atendidos_; }
 
-void Caixa::calculaFaturamentoMedio(int valor) {
-	faturamentoMedio_ = (faturamentoMedio_ + valor)/2;
-}
+void Caixa::faturamento_medio(int valor) { faturamento_medio_ = (faturamento_medio_ + valor) / 2; }
 
-void Caixa::adicionaFaturamentoPerdido(int valor) {
-	faturamentoPerdido_+= (3*valor);
-}
+const int Caixa::faturamento_medio() const { return faturamento_medio_; }
 
-void Caixa::calculaLucroCaixa(int tempoSimulacaoHoras) {
-	lucroDoCaixa_ = faturamento_ - (720/tempoSimulacaoHoras); // faturamento - ((30dias * 24horas)/simulaçãoHoras)
-}
+const int Caixa::faturamento_total() const { return faturamento_total_; }
 
-void Caixa::adicionaFaturamento(int faturamento) {
-	faturamento_ += faturamento;
-}
+void Caixa::tempo_espera_medio(unsigned tempo) { tempo_espera_medio_ = (tempo_espera_medio_ + tempo) / 2; }
+
+const unsigned Caixa::tempo_espera_medio() const { return tempo_espera_medio_; }
 
 }
