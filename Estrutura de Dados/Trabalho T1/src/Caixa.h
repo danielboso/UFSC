@@ -4,55 +4,72 @@
  *  \Released under the GNU General Public License 2.0
  */
 
-#ifndef SRC_CAIXA_H_
-#define SRC_CAIXA_H_
+#ifndef SUPERMERCADO_CAIXA_H_
+#define SUPERMERCADO_CAIXA_H_
+
+#include <fstream>
+
+#include "Cliente.h"
+#include "LinkedQueue.h"
 
 namespace supermercado {
-
 
 class Caixa {
 
 public:
-	Caixa();
+	Caixa(char*, unsigned, unsigned);
 
 	~Caixa();
 
-	void adicionaNumeroClientesNaFila();
+	void receber_cliente();
 
-	void retiraNumeroClientesNaFila();
+	void processar_compras();
 
-	void adicionaNumeroClientesAtendidos();
+	const std::ostream& operator<<(std::ostream&) const;
 
-	void adicionaNumeroClientesDesistiram();
+	const char* identificador() const;
 
-	void adicionaNumeroProdutosParaCaixaPassar(int);
+	const unsigned eficiencia() const;
 
-	void removeNumeroProdutosParaCaixaPassar(int);
+	const unsigned salario() const;
 
-	void calculaTempoMedioEspera(int);
+	const unsigned produtos_pendentes() const;
 
-	void calculaFaturamentoMedio(int);
+	const unsigned clientes_fila() const;
 
-	void adicionaFaturamentoPerdido(int);
+	const unsigned clientes_atendidos() const;
 
-	void calculaLucroCaixa(int);
+	void faturamento_medio(int);
 
-	void adicionaFaturamento(int);
+	const int faturamento_medio() const;
+
+	const int faturamento_total() const;
+
+	void tempo_espera_medio(unsigned);
+
+	const unsigned tempo_espera_medio() const;
 
 private:
-	int numeroClientesFila_{0};
-	int numeroClientesAtendidos_{0};
-	int numeroClientesDesistiram_{0};
-	int numeroProdutosParaCaixaPassar_{0};
-	int tempoMedioDeEspera_{0};
-	int faturamentoMedio_{0};
-	int eficiencia_{0};
-	int faturamento_{0};
-	int faturamentoPerdido_{0};
-	int salario_{0};
-	int lucroDoCaixa_{0};
+	structures::LinkedQueue<Cliente>* clientes_;
+
+	char* identificador_[80];
+
+	unsigned eficiencia_;
+
+	unsigned salario_;
+
+	unsigned produtos_pendentes_{0u};
+
+	unsigned clientes_atendidos_{0u};
+
+	int faturamento_medio_{0};
+
+	int faturamento_total_{0};
+
+	unsigned tempo_espera_medio_{0u};
+
 };
 
 }  // namespace supermercado
 
-#endif /* SRC_CAIXA_H_ */
+#endif
