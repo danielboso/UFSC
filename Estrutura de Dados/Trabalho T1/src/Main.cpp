@@ -5,16 +5,19 @@
  */
 
 #include "visao/Visao.h"
+#include "Supermercado.h"
 
-class Main {
+int main(int argc, char* argv[]) {
 
-	int main(int argc, char **argv) {
-
-		supermercado::Visao visao = new supermercado::Visao();
-
-		visao.saidaMensagemPerguntaFormaDeExecucao();
-
-		//int numeroCaixas, int tempoMediaChegadaClientes, int tempoSimulacaoHoras
-
+	supermercado::Visao visao{};
+	supermercado::Supermercado supermercado;
+	visao.saidaMensagemPerguntaFormaDeExecucao();
+	if (supermercado.trataEntradaFormaExecucao(visao.entradaMensagemPerguntaFormaDeExecucao())) {
+		supermercado = supermercado::Supermercado(); // Sistema lê informações através de arquivo.
+	} else {
+		supermercado = supermercado::Supermercado(); // Sistema lê informações através de entrada de usuário.
 	}
-};
+
+	//int numeroCaixas, int tempoMediaChegadaClientes, int tempoSimulacaoHoras
+	return 0;
+	}
