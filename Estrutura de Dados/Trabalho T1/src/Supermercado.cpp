@@ -9,16 +9,21 @@
 #include "Caixa.h"
 #include "Cliente.h"
 #include "estruturasDeDados/CircularList.h"
+#include "Excecoes.h"
 
 namespace supermercado {
+
+Supermercado::Supermercado() {
+
+}
 
 Supermercado::Supermercado(int numeroCaixas, int tempoMediaChegadaClientes, int tempoSimulacaoHoras):
 	numeroCaixas_{ numeroCaixas },
 	tempoMediaChegadaClientes_{ tempoMediaChegadaClientes },
 	tempoSimulacaoHoras_{ tempoSimulacaoHoras } {
-		tempoSimulacaoSegundos_{ tempoSimulacaoHoras_*3600 };
+		tempoSimulacaoSegundos_ = tempoSimulacaoHoras_*3600 ;
 		calculaIntervaloTempoChegadaProximoCliente();
-		caixas_ = new structures::CircularList();
+		caixas_ = new structures::CircularList<Caixa>();
 }
 
 void Supermercado::calculaIntervaloTempoChegadaProximoCliente() {
@@ -26,7 +31,7 @@ void Supermercado::calculaIntervaloTempoChegadaProximoCliente() {
 		tempoParaInserirNovoCliente_ += tempo;
 }
 
-void Supermercado::iniciarSimulacao() {
+void Supermercado::iniciarSimulacao() {/*
 	//Instancia caixas
 	for (int i = 0; i < numeroCaixas_; i ++) {
 		Caixa caixa = new Caixa();
@@ -39,9 +44,6 @@ void Supermercado::iniciarSimulacao() {
 			// Fazer método que busca qual caixa o cliente irá ser adicionado
 			Caixa *caixaMenorFila;
 
-			for (int i = 0; i < caixas_; i++) {
-
-			}
 
 			calculaIntervaloTempoChegadaProximoCliente();
 		}
@@ -50,7 +52,21 @@ void Supermercado::iniciarSimulacao() {
 
 		}
 		tempoDecorrido_++;
-	}
+	}*/
 }
 
+bool trataEntradaFormaExecucao(char opcao) {
+	bool excecao = true;
+	while (excecao) {
+		try {
+			if ((opcao-'0') < 0 || (opcao-'0') > 1) {
+				throw ExcecaoOpcaoInvalida();
+			}
+			excecao = false;
+		} catch (ExcecaoOpcaoInvalida e) {
+				excecao = true;
+				e.what();
+		}
+	}
 }
+};

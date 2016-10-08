@@ -4,6 +4,9 @@
  *  \Released under the GNU General Public License 2.0
  */
 
+ #include "Caixa.h"
+ #include "estruturasDeDados/CircularList.h"
+
 #ifndef SRC_SUPERMERCADO_H_
 #define SRC_SUPERMERCADO_H_
 
@@ -11,11 +14,15 @@ namespace supermercado {
 
 class Supermercado {
 public:
+	Supermercado();
+
 	Supermercado(int, int , int);
 
 	void calculaIntervaloTempoChegadaProximoCliente();
 
 	void iniciarSimulacao();
+
+	bool trataEntradaFormaExecucao(char);
 
 private:
 		int numeroCaixas_{0};
