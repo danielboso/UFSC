@@ -18,7 +18,7 @@ Cliente::Cliente() {}
 /*!	Usado para criar o objeto com tempo de chegada.
  * 	\param tempo_chegada_ um int que indica o tempo que Cliente chegou.
  */
-Cliente::Cliente(int tempo_chegada) :
+Cliente::Cliente(unsigned tempo_chegada) :
 	tempo_chegada_{ tempo_chegada }
 {
 	gera_quantidade_itens();
