@@ -9,8 +9,8 @@
 
 #include <fstream>
 
-#include "Cliente.h"
-#include "estruturasDeDados/LinkedQueue.h"
+#include "./cliente.h"
+#include "structures/linked_queue.h"
 
 namespace supermercado {
 
@@ -21,9 +21,11 @@ public:
 
 	~Caixa();
 
-	void receber_cliente();
+	void recebe_cliente(Cliente&);
 
-	void processar_compras();
+	void retira_cliente(unsigned&);
+
+	void processa_compras(Cliente&);
 
 	const std::ostream& operator<<(std::ostream&) const;
 
@@ -52,7 +54,7 @@ public:
 private:
 	structures::LinkedQueue<Cliente>* clientes_;
 
-	char* identificador_[80];
+	char* identificador_;
 
 	unsigned eficiencia_;
 
