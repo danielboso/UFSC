@@ -31,10 +31,43 @@ void Visao::saidaMensagemNumeroCaixas() {
 	std::cout << "Digite o número de caixas que a simulação terá inicialmente:\n";
 }
 
-int Visao::entradaMensagemNumeroCaixas() {
-
+char* Visao::entradaMensagemNumeroCaixas() {
+	char numeroCaixas[10];
+	std::cin >> numeroCaixas;
+	return numeroCaixas;
 }
 
+void Visao::saidaIdentificadorCaixa() {
+	std::cout << "Digite o identificador do caixa:\n";
+}
 
+char* Visao::entradaIdentificadorCaixa() {
+	char identificador[80];
+	std::cin >> identificador;
+	return identificador;
+}
+
+void Visao::saidaEficienciaCaixa() {
+	std::cout << "Digite a eficiência do caixa.\n";
+	std::cout << "\t1 para eficiente.";
+	std::cout << "\t2 para médio.";
+	std::cout << "\t3 para ruim.\n";
+}
+
+char Visao::entradaEficienciaCaixa() {
+	char opcao;
+	std::cin >> opcao;
+	return opcao;
+}
+
+void Visao::saidaSalarioCaixa() {
+	std::cout << "Digite o salário do caixa:\n";
+}
+
+char* VisaoentradaSalarioCaixa() {
+	char opcao[10];
+	std::cin >> opcao;
+	return opcao;
+}
 
 } /* namespace supermercado */

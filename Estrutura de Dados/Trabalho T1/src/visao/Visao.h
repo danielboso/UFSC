@@ -21,7 +21,19 @@ public:
 
 	void saidaMensagemNumeroCaixas();
 
-	int entradaMensagemNumeroCaixas();
+	char* entradaMensagemNumeroCaixas();
+
+	void saidaIdentificadorCaixa();
+
+	char* entradaIdentificadorCaixa();
+
+	void saidaEficienciaCaixa();
+
+	char entradaEficienciaCaixa();
+
+	void saidaSalarioCaixa();
+
+	char* entradaSalarioCaixa();
 
 };
 
