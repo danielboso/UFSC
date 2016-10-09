@@ -22,7 +22,7 @@ public:
 
 	//! Construtor com parametros.
 	/*!	Usado para criar o objeto com tempo de chegada.	*/
-	Cliente(int);
+	Cliente(unsigned);
 
 	//! Destrutor.
 	/*!	Destroi os dados armazenados na memoria e devolve a memória ao SO.	*/
