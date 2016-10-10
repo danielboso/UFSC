@@ -1,6 +1,6 @@
 //  !	Classe ListaCircular.
 /*!
- *  \Copyright (C) 2016  Adan Pereira Gomes e Daniel Boso
+ *  \Copyright (C) 2016  Adan Pereira Gomes
  *  \Released under the GNU General Public License 2.0
  */
 
@@ -17,8 +17,6 @@ namespace structures {
 //! Classe CircularList | ListaCircular
 /*!
  *	Tipo de estrutura similar a lista encadeada.
- *	Possui um elemento inicial chamado de sentinela, responsavel por fazer a ligação entre
-	o primeiro e ultimo elementos.
  *	Esta classe e capaz de alocar dinamicamente memoria conforme necessario.
  */
 template<typename T>
@@ -129,17 +127,17 @@ class CircularList {
 	/*!	Ponteiro para o primeiro elemento.	*/
 	Node<T>* head { nullptr };
 
+    //! Variavel privada tail .
+	/*!	Ponteiro para o ultimo elemento.	*/
+    Node<T>* tail { nullptr };
+
 	//! Variavel privada size_ .
 	/*!	Responsavel por armazenar o indice do ultimo elemento armazenado.	*/
 	std::size_t size_ { 0u };
 };
 
 template<typename T>
-CircularList<T>::CircularList() {
-	T data;
-	head = new Node(data);
-	head->next(head);
-}
+CircularList<T>::CircularList() {}
 
 template<typename T>
 CircularList<T>::~CircularList() {
@@ -155,35 +153,38 @@ void CircularList<T>::clear() {
 
 template<typename T>
 void CircularList<T>::push_back(const T& data) {
-	Node<T>* tmp = new Node(data, head);
+	Node<T>* tmp = new Node<T>(data, head);
 	if (tmp == nullptr) {
 		throw std::out_of_range("Erro: Estrutura vazia.");
 	} else if (size_ == 0) {
 		push_front(data);
+		delete tmp;
 	} else {
-		Node<T>* it = head->next();
-		for (unsigned i = 0u; i != size_ - 1; ++i) {
-		    it = it->next();
-		}
-		it->next(tmp);
+		tail->next(tmp);
+		tail = tmp;
 		++size_;
 	}
 }
 
 template<typename T>
 void CircularList<T>::push_front(const T& data) {
-	Node<T>* tmp = new Node(data, head->next());
+	Node<T>* tmp = new Node<T>(data, head);
 	if (tmp == nullptr) {
 		throw std::out_of_range("Erro: Estrutura cheia.");
+	} else if (empty()) {
+		tmp->next(tmp);
+		head = tmp;
+		tail = head;
+		++size_;
 	} else {
-		head->next(tmp);
+		head = tmp;
 		++size_;
 	}
 }
 
 template<typename T>
 void CircularList<T>::insert(const T& data, std::size_t index) {
-	Node<T>* tmp = new Node(data);
+	Node<T>* tmp = new Node<T>(data);
 	if (tmp == nullptr) {
 		throw std::out_of_range("Erro: Estrutura cheia.");
 	} else if (index > size_) {
@@ -191,7 +192,7 @@ void CircularList<T>::insert(const T& data, std::size_t index) {
 	} else if (empty()) {
 		push_front(data);
 	} else {
-		Node<T>* it = head->next();
+		Node<T>* it = head;
 		for (std::size_t i = 0; i != size_; ++i) {
 			if (i == index - 1) {
 				tmp->next(it->next());
@@ -207,13 +208,13 @@ void CircularList<T>::insert(const T& data, std::size_t index) {
 
 template<typename T>
 void CircularList<T>::insert_sorted(const T& data) {
-	Node<T>* tmp = new Node(data);
+	Node<T>* tmp = new Node<T>(data);
 	if (tmp == nullptr) {
 		throw std::out_of_range("Erro: Estrutura cheia.");
 	} else if (empty()) {
 		push_front(data);
 	} else {
-		Node<T>* it = head->next();
+		Node<T>* it = head;
 		for (std::size_t i = 0; i != size_; ++i) {
 			if (it->data() > data) {
 				if (i == 0) {
@@ -239,7 +240,7 @@ T& CircularList<T>::at(std::size_t index) {
 	} else if (index > size_) {
 		throw std::out_of_range("Erro: Posicao invalida.");
 	} else {
-		Node<T>* it = head->next();
+		Node<T>* it = head;
 		for (std::size_t i = 0u; i != index; ++i) {
 			it = it->next();
 		}
@@ -249,8 +250,6 @@ T& CircularList<T>::at(std::size_t index) {
 
 template<typename T>
 T& CircularList<T>::pop(std::size_t index) {
-	Node<T>* it = head->next();
-	Node<T>* out = it->next();
 	if (empty()) {
 		throw std::out_of_range("Erro: Estrutura vazia.");
 	} else if (index > size_ - 1) {
@@ -259,19 +258,21 @@ T& CircularList<T>::pop(std::size_t index) {
 		if (index == 0) {
 			return pop_front();
 		} else {
-			for (std::size_t i = 0; i != size_ - 1; ++i) {
-				if (i == index - 1) {
+			Node<T>* previous = head;
+			Node<T>* it = head;
+			for (auto i = 0u; i != size_; ++i) {
+				if (i == index) {
+					previous->next(it->next());
 					--size_;
-					it->next(out->next());
 					break;
 				} else {
-					out = out->next();
+					previous = it;
 					it = it->next();
 				}
 			}
+			return it->data();
 		}
 	}
-	return out->data();
 }
 
 template<typename T>
@@ -288,8 +289,8 @@ T& CircularList<T>::pop_front() {
 	if (empty()) {
 		throw std::out_of_range("Erro: Estrutura vazia.");
 	} else {
-		Node<T>* out = head->next();
-		head->next(out->next());
+		Node<T>* out = head;
+		head = out->next();
 		--size_;
 		return out->data();
 	}
@@ -300,16 +301,16 @@ void CircularList<T>::remove(const T& data) {
 	if (empty()) {
 		throw std::out_of_range("Erro: Estrutura vazia.");
 	} else {
-		Node<T>* previousIt = head->next();
-		Node<T>* it = head->next();
-		while (it != head) {
+		Node<T>* previous = head;
+		Node<T>* it = head;
+		for (auto i = 0u; i != size_; ++i) {
 			if (it->data() == data) {
-				previousIt->next(it->next());
+				previous->next(it->next());
 				--size_;
 				delete it;
 				return;
 			}
-			previousIt = it;
+			previous = it;
 			it = it->next();
 		}
 	}
@@ -322,10 +323,10 @@ bool CircularList<T>::empty() const {
 
 template<typename T>
 bool CircularList<T>::contains(const T& data) const {
-	Node<T>* it = head->next();
-	while (it != head) {
+	Node<T>* it = head;
+	for (auto i = 0u; i != size_; ++i) {
 		if (it->data() == data) {
-				return true;
+			return true;
 		}
 		it = it->next();
 	}
@@ -337,7 +338,7 @@ std::size_t CircularList<T>::find(const T& data) const {
 	if (!contains(data)) {
 		throw std::out_of_range("Erro: Dado inexistente;");
 	}
-	Node<T>* it = head->next();
+	Node<T>* it = head;
 	for (std::size_t i = 0; i != size_; ++i) {
 		if (it->data() == data) {
 			return i;
