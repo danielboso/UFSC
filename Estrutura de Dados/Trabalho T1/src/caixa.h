@@ -10,7 +10,7 @@
 #include <fstream>
 
 #include "./cliente.h"
-#include "structures/linked_queue.h"
+#include "estruturasDeDados/linked_queue.h"
 
 namespace supermercado {
 
