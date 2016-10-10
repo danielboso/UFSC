@@ -4,7 +4,7 @@
  *  \Released under the GNU General Public License 2.0
  */
 
- #include "Estatistica.h"
+ #include "estatistica.h"
 
  namespace supermercado {
 
