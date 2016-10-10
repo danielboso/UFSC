@@ -22,8 +22,8 @@ sem_t semaforoInit;
 
 double Random(void)
 /* ----------------------------------------------------------------
- * Random returns a pseudo-random real number uniformly distributed 
- * between 0.0 and 1.0. 
+ * Random returns a pseudo-random real number uniformly distributed
+ * between 0.0 and 1.0.
  * ----------------------------------------------------------------
  */
 {
@@ -32,9 +32,9 @@ double Random(void)
         long t;
 
   t = MULTIPLIER * (seed % Q) - R * (seed / Q);
-  if (t > 0) 
+  if (t > 0)
     seed = t;
-  else 
+  else
     seed = t + MODULUS;
   return ((double) seed / MODULUS);
 }
@@ -69,25 +69,23 @@ int main(int argc, char **argv)
 		printf("Wrong number of parameters.\nUsage: nbody num_bodies timesteps\n");
 		exit(1);
 	}
-    
+
 	npart = atoi(argv[1]);
 	cnt = atoi(argv[2]);
-	numeroThreads = atoi(argv[3]);
-	dt = 0.001; 
+  numeroThreads = atoi(argv[3]);
+	dt = 0.001;
 	dt_old = 0.001;
 
     /* Allocate memory for particles */
     particles = (Particle *) malloc(sizeof(Particle)*npart);
     pv = (ParticleV *) malloc(sizeof(ParticleV)*npart);
-	
 
     sem_init(&semaforoInit, 0, numeroThreads);
     /* Generate the initial values */
     InitParticles( particles, pv, npart);
-    
-	sim_t = 0.0;
+    sem_destroy(&semaforoInit);
 
-
+    sim_t = 0.0;
 
     while (cnt--) {
       double max_f;
@@ -96,69 +94,47 @@ int main(int argc, char **argv)
       /* Once we have the forces, we compute the changes in position */
       sim_t += ComputeNewPos( particles, pv, npart, max_f);
     }
-
-    
-    //for (i=0; i<npart; i++)
-    //  fprintf(stdout,"%.5lf %.5lf\n", particles[i].x, particles[i].y);
-    //return 0;
-
-
-    // -------------------- Alterado -------------------------
-    sem_destroy(&semaforoInit);
-    // -------------------------------------------------------
+    for (i=0; i<npart; i++)
+      fprintf(stdout,"%.5lf %.5lf\n", particles[i].x, particles[i].y);
+    return 0;
 }
-void *ThreadInitParticles(Particle particles[], ParticleV pv[], int i) {
-	particles[i].x	  = Random();
-	particles[i].y	  = Random();
-	particles[i].z	  = Random();
-	particles[i].mass = 1.0;
-	pv[i].xold	  = particles[i].x;
-	pv[i].yold	  = particles[i].y;
-	pv[i].zold	  = particles[i].z;
-	pv[i].fx	  = 0;
-	pv[i].fy	  = 0;
-	pv[i].fz	  = 0;
-}
+
+struct arg_init{
+    Particle particle;
+    ParticleV pv;
+};
+
+void *ThreadInitParticles(void *);
 
 void InitParticles( Particle particles[], ParticleV pv[], int npart )
-{	
-	// -------------------- Alterado -------------------------
-	sem_wait(&semaforoInit);
-	// -------------------------------------------------------
-	pthread_t threads[npart];
-	/*
-	struct arg_Init {
-    	Particle particles[]; 
-    	ParticleV pv[]; 
-    	int i;
-	};*/
+{
+  struct arg_init arg_init_array[npart];
+  pthread_t threads[npart];
 
-	typedef struct arg_Init {
-    	Particle particles[]; 
-    	ParticleV pv[]; 
-    	int i;
-	} arg_Init;
+  int i;
+  for (i=0; i<npart; i++) {
+    arg_init_array[i].particle = particles[i];
+		arg_init_array[i].pv = pv[i];
+    pthread_create(&threads[i], NULL, ThreadInitParticles, (void *) &arg_init_array[i]);
+  }
 
-	struct arg_Init *argInit;
-	
-
-	for (int i = 0; i < npart; i ++) {
-
-	}
-	
-
-	for (int i = 0; i < npart; i ++) {
-		
-		pthread_create(&threads[i], NULL, ThreadInitParticles, (void *)arg_Init);
-	}
-    
-	for (int i = 0; i < npart; i ++) {
+  for (int i = 0; i < npart; i ++) {
 		pthread_join(threads[i], NULL);
 	}
-	// -------------------- Alterado -------------------------
-	sem_post(&semaforoInit);
-	// -------------------------------------------------------
+}
 
+void *ThreadInitParticles( void *dados_particula ) {
+  struct arg_init *arg_init_particula = (struct arg_init *) dados_particula;
+	arg_init_particula->particle.x	  = Random();
+	arg_init_particula->particle.y	  = Random();
+	arg_init_particula->particle.z	  = Random();
+	arg_init_particula->particle.mass   = 1.0;
+	arg_init_particula->pv.xold	  = arg_init_particula->particle.x;
+	arg_init_particula->pv.yold	  = arg_init_particula->particle.y;
+	arg_init_particula->pv.zold	  = arg_init_particula->particle.z;
+	arg_init_particula->pv.fx	  = 0;
+	arg_init_particula->pv.fy	  = 0;
+	arg_init_particula->pv.fz	  = 0;
 }
 
 double ComputeForces( Particle myparticles[], Particle others[], ParticleV pv[], int npart )
@@ -227,4 +203,3 @@ double ComputeNewPos( Particle particles[], ParticleV pv[], int npart, double ma
   }
   return dt_old;
 }
-
