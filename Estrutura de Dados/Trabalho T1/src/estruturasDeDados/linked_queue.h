@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <stdexcept>
 
-#include "./Node.hpp"
+#include "./node.hpp"
 
 namespace structures {
 
