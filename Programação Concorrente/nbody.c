@@ -100,8 +100,8 @@ int main(int argc, char **argv)
 }
 
 struct arg_init{
-    Particle particle;
-    ParticleV pv;
+    Particle *particle;
+    ParticleV *pv;
 };
 
 void *ThreadInitParticles(void *);
@@ -110,11 +110,10 @@ void InitParticles( Particle particles[], ParticleV pv[], int npart )
 {
   struct arg_init arg_init_array[npart];
   pthread_t threads[npart];
-
   int i;
   for (i=0; i<npart; i++) {
-    arg_init_array[i].particle = particles[i];
-		arg_init_array[i].pv = pv[i];
+    arg_init_array[i].particle = &particles[i];
+		arg_init_array[i].pv = &pv[i];
     pthread_create(&threads[i], NULL, ThreadInitParticles, (void *) &arg_init_array[i]);
   }
 
@@ -125,16 +124,16 @@ void InitParticles( Particle particles[], ParticleV pv[], int npart )
 
 void *ThreadInitParticles( void *dados_particula ) {
   struct arg_init *arg_init_particula = (struct arg_init *) dados_particula;
-	arg_init_particula->particle.x	  = Random();
-	arg_init_particula->particle.y	  = Random();
-	arg_init_particula->particle.z	  = Random();
-	arg_init_particula->particle.mass   = 1.0;
-	arg_init_particula->pv.xold	  = arg_init_particula->particle.x;
-	arg_init_particula->pv.yold	  = arg_init_particula->particle.y;
-	arg_init_particula->pv.zold	  = arg_init_particula->particle.z;
-	arg_init_particula->pv.fx	  = 0;
-	arg_init_particula->pv.fy	  = 0;
-	arg_init_particula->pv.fz	  = 0;
+	arg_init_particula->particle->x	  = Random();
+	arg_init_particula->particle->y	  = Random();
+	arg_init_particula->particle->z	  = Random();
+	arg_init_particula->particle->mass   = 1.0;
+	arg_init_particula->pv->xold	  = arg_init_particula->particle->x;
+	arg_init_particula->pv->yold	  = arg_init_particula->particle->y;
+	arg_init_particula->pv->zold	  = arg_init_particula->particle->z;
+	arg_init_particula->pv->fx	  = 0;
+	arg_init_particula->pv->fy	  = 0;
+	arg_init_particula->pv->fz	  = 0;
 }
 
 double ComputeForces( Particle myparticles[], Particle others[], ParticleV pv[], int npart )
