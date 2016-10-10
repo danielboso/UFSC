@@ -15,26 +15,25 @@ public:
 
 	~Visao();
 
-	void saidaMensagemPerguntaFormaDeExecucao();
+	void mensagem_forma_execucao();
 
-	char entradaMensagemPerguntaFormaDeExecucao();
+	char entrada_forma_execucao();
 
-	void saidaMensagemNumeroCaixas();
+	void mensagem_numero_caixas();
 
-	char* entradaMensagemNumeroCaixas();
+	char* entrada_numero_caixas();
 
-	void saidaIdentificadorCaixa();
+	void mensagem_identificador_caixa();
 
-	char* entradaIdentificadorCaixa();
+	char* entrada_identificador_caixa();
 
-	void saidaEficienciaCaixa();
+	void mensagem_eficiencia_caixa();
 
-	char entradaEficienciaCaixa();
+	char entrada_eficiencia_caixa();
 
-	void saidaSalarioCaixa();
+	void mensagem_salario_caixa();
 
-	char* entradaSalarioCaixa();
-
+	char* entrada_salario_caixa();
 };
 
 } /* namespace supermercado */
