@@ -14,9 +14,14 @@ public:
 	ExcecaoOpcaoInvalida() {}
 
 	virtual const char* what() const throw () {
-			return ("Opção Inválida!");
+			return ("Opção Inválida!\n");
 	}
 
+};
+
+class ExcecaoEntradaInvalida: public std::exception {
+public:
+	ExcecaoEntradaInvalida(){}
 };
 
 
