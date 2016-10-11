@@ -53,6 +53,8 @@ public:
 
 	void mensagem_nome_do_supermercado(std::string);
 
+	void mensagem_nome_do_supermercado();
+
 	std::string entrada_nome_do_supermercado();
 
 	void mensagem_tempo_simulacao();

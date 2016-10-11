@@ -102,6 +102,10 @@ void mensagem_nome_do_supermercado(std::string nome_supermercado) {
 	std::cout << "Nome do supermercado: " << nome_supermercado;
 }
 
+void mensagem_nome_do_supermercado() {
+	std::cout << "Digite o nome do supermercado: ";
+}
+
 std::string entrada_nome_do_supermercado() {
 	std::string nome_supermercado;
 	getline(std::cin, nome_supermercado);
