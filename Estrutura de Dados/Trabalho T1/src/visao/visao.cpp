@@ -98,6 +98,12 @@ void mensagem_faturamento_perdido(int faturamento_perdido) {
 	std:: cout << "\tFaturamento perdido: " << faturamento_perdido;
 }
 
+std::string entrada_nome_do_supermercdo() {
+	std::string nome_supermercado;
+	getline(std::cin, nome_supermercado);
+	return nome_supermercado;
+}
+
 void mensagem_nome_do_supermercado(std::string nome_supermercado) {
 	std:: cout << "Nome do supermercado: " << nome_supermercado;
 }

@@ -51,6 +51,8 @@ public:
 
 	void mensagem_faturamento_perdido(int);
 
+	std::string entrada_nome_do_supermercdo();
+
 	void mensagem_nome_do_supermercado(std::string);
 };
 
