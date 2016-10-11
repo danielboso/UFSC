@@ -10,8 +10,6 @@
 
 #include "../excecoes.h"
 
-#include <string>
-
 namespace supermercado {
 
 Visao::Visao() {}
@@ -70,6 +68,38 @@ std::string Visao::entrada_salario_caixa() {
 	std::string opcao;
 	getline(std::cin, opcao);
 	return opcao;
+}
+
+void mensagem_faturamento_total_supermercado(int faturamento) {
+	std::cout << "\tFaturamento total: " << faturamento;
+}
+
+void mensagem_faturamento_medio_caixa(double faturamento_medio) {
+	std:: cout << "\tFaturamento médio: " << faturamento_medio;
+}
+
+void mensagem_faturamento_real_cada_caixa(int faturamento_real) {
+	std:: cout << "\tFaturamento médio:" << faturamento_real;
+}
+
+void mensagem_lucro_por_caixa(int lucro_caixa) {
+	std:: cout << "\tLucro do caixa: " << lucro_caixa;
+}
+
+void mensagem_tempo_medio_permanencia_fila(double tempo_medio) {
+	std:: cout << "\tTempo médio de permanência na fila: " << tempo_medio;
+}
+
+void mensagem_numero_clientes_desistiram(int numero_desistencias) {
+	std:: cout << "\tNúmero clientes que desistiram: " << numero_desistencias;
+}
+
+void mensagem_faturamento_perdido(int faturamento_perdido) {
+	std:: cout << "\tFaturamento perdido: " << faturamento_perdido;
+}
+
+void mensagem_nome_do_supermercado(std::string nome_supermercado) {
+	std:: cout << "Nome do supermercado: " << nome_supermercado;
 }
 
 } /* namespace supermercado */

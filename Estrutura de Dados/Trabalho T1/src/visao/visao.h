@@ -36,6 +36,22 @@ public:
 	void mensagem_salario_caixa();
 
 	std::string entrada_salario_caixa();
+
+	void mensagem_faturamento_total_supermercado(int);
+
+	void mensagem_faturamento_medio_caixa(double);
+
+	void mensagem_faturamento_real_cada_caixa(int);
+
+	void mensagem_lucro_por_caixa(int);
+
+	void mensagem_tempo_medio_permanencia_fila(double);
+
+	void mensagem_numero_clientes_desistiram(int);
+
+	void mensagem_faturamento_perdido(int);
+
+	void mensagem_nome_do_supermercado(std::string);
 };
 
 } /* namespace supermercado */
