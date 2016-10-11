@@ -14,12 +14,14 @@ namespace supermercado {
 
 class SuperMercado {
  public:
-	SuperMercado(char*, unsigned, unsigned, unsigned);
+	SuperMercado(std::string, unsigned, unsigned, unsigned);
 
 	~SuperMercado();
 	// GeraCliente() - cliente compras e lugar na fila
 
 	void inicia_simulacao();
+
+	void atualiza_caixas();
 
 	void gera_cliente();
 
@@ -33,7 +35,7 @@ class SuperMercado {
 
  private:
 	structures::CircularList<Caixa*> *caixas_;
-	char* nome_mercado_;
+	std::string nome_mercado_;
 	unsigned tempo_simulacao_;
 	unsigned tempo_medio_chegada_;
 	unsigned total_caixas_;
