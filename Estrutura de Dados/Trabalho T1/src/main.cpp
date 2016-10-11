@@ -55,10 +55,9 @@ int main(int argc, char* argv[]) {
 			try {
 				excecao_nome_supermercado = false;
 				nome_supermercado = visao.entrada_nome_do_supermercado();
-				catch(std::invalid_argument e) {
+			} catch(std::invalid_argument e) {
 					excecao_nome_supermercado = true;
-					std::cout << "Argumento Inválido"
-				}
+					std::cout << "Argumento Inválido";
 			}
 		}
 
@@ -121,6 +120,6 @@ int main(int argc, char* argv[]) {
 
 		supermercado = new SuperMercado(nome_supermercado, tempo_simulacao, tempo_medio_chegada, total_caixas); // Gera supermercado com informações dadas pelo usuário
 	}
-	
+
 	return 0;
 }
