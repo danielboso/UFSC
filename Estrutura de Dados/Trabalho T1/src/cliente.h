@@ -11,6 +11,8 @@
 
 namespace supermercado {
 
+enum tipo_cliente {MENOR_FILA, MENOS_PRODUTOS};
+
 //! Classe Cliente
 /*!	Objeto responsavel por contabilizar as compras que foram feitas no supermercado em um dado tempo.
  */
@@ -83,6 +85,13 @@ public:
 	 */
 	void tempo_saida(unsigned);
 
+	//! Função membro tipo.
+	/*!	Getter da variavel tipo_.
+	 *	\return um const tipo_cliente.
+	 *	\sa gera_tipo(), tipo_
+	 */
+	const tipo_cliente tipo() const;
+
 private:
 	//! Função membro gera_cartao.
 	/*!	Responsavel por decidir se Cliente usará cartão ou não.
@@ -101,6 +110,11 @@ private:
 	 *	\sa valor_total_
 	 */
 	void gera_valor_total();
+
+	//! Função membro gera_tipo.
+	/*!	Responsavel por sortear que tipo de cliente que será.
+	 */
+	void gera_tipo();
 
 	//! Variavel privada cartao_ .
 	/*!	Indica se o Cliente usará ou não cartão no pagamento.	*/
@@ -121,6 +135,10 @@ private:
 	//! Variavel privada tempo_saida_ .
 	/*!	Indica o tempo em que Cliente deixará a Fila.	*/
 	unsigned tempo_saida_{0};
+
+	//! Variavel privada tipo .
+	/*!	Indica se o cliente vai na fila com menos pessoas ou a que tem menos produtos.	*/
+	tipo_cliente tipo_;
 
 };
 
