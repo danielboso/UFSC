@@ -51,9 +51,21 @@ public:
 
 	void mensagem_faturamento_perdido(int);
 
-	std::string entrada_nome_do_supermercdo();
-
 	void mensagem_nome_do_supermercado(std::string);
+
+	std::string entrada_nome_do_supermercado();
+
+	void mensagem_tempo_simulacao();
+
+	unsigned entrada_tempo_simulacao();
+
+	void mensagem_tempo_medio_chegada();
+
+	unsigned entrada_tempo_medio_chegada();
+
+	void mensagem_total_caixas();
+
+	unsigned entrada_total_caixas();
 };
 
 } /* namespace supermercado */
