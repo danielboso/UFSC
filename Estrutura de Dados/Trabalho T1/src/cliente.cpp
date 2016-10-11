@@ -24,6 +24,7 @@ Cliente::Cliente(unsigned tempo_chegada) :
 	gera_quantidade_itens();
 	gera_valor_total();
 	gera_cartao();
+	gera_tipo();
 }
 
 //! Destrutor.
@@ -93,6 +94,13 @@ const unsigned Cliente::tempo_saida() const { return tempo_saida_; }
  */
 void Cliente::tempo_saida(unsigned tempo_saida) { tempo_saida_ = tempo_saida; }
 
+//! Função membro tipo.
+/*!	Getter da variavel tipo_.
+ *	\return um const tipo_cliente.
+ *	\sa gera_tipo(), tipo_
+ */
+const tipo_cliente Cliente::tipo() const { return tipo_; }
+
 //! Função membro gera_cartao.
 /*!	Responsavel por decidir se Cliente usará cartão ou não.
  *	\sa cartao_
@@ -122,6 +130,18 @@ void Cliente::gera_valor_total() {
 	srand(tempo_chegada_);
 	for (auto i = 0u; i != quantidade_itens_; ++i) {
 		valor_total_ += (rand() % 90) + 1;
+	}
+}
+
+//! Função membro gera_tipo.
+/*!	Responsavel por sortear que tipo de cliente que será.
+ */
+void Cliente::gera_tipo() {
+	srand(tempo_chegada_);
+	if ((rand() % 101) < 51) {
+		tipo_ = MENOR_FILA;
+	} else {
+		tipo_ = MENOS_PRODUTOS;
 	}
 }
 
