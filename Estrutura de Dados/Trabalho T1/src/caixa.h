@@ -8,28 +8,29 @@
 #define SUPERMERCADO_CAIXA_H_
 
 #include <fstream>
+#include <string>
 
 #include "./cliente.h"
-#include "estruturasDeDados/linked_queue.h"
+#include "structures/linked_queue.h"
 
 namespace supermercado {
 
 class Caixa {
 
 public:
-	Caixa(char*, unsigned, unsigned);
+	Caixa(std::string, unsigned, unsigned);
 
 	~Caixa();
 
-	void recebe_cliente(Cliente&);
+	void recebe_cliente(Cliente*);
 
-	void retira_cliente(unsigned&);
+	void retira_cliente(const unsigned&);
 
-	void processa_compras(Cliente&);
+	void processa_compras(Cliente*);
 
 	const std::ostream& operator<<(std::ostream&) const;
 
-	const char* identificador() const;
+	const std::string identificador() const;
 
 	const unsigned eficiencia() const;
 
@@ -43,18 +44,18 @@ public:
 
 	void faturamento_medio(int);
 
-	const int faturamento_medio() const;
+	const double faturamento_medio() const;
 
-	const int faturamento_total() const;
+	const double faturamento_total() const;
 
 	void tempo_espera_medio(unsigned);
 
 	const unsigned tempo_espera_medio() const;
 
 private:
-	structures::LinkedQueue<Cliente>* clientes_;
+	structures::LinkedQueue<Cliente*> *clientes_;
 
-	char* identificador_;
+	std::string identificador_;
 
 	unsigned eficiencia_;
 
@@ -64,9 +65,9 @@ private:
 
 	unsigned clientes_atendidos_{0u};
 
-	int faturamento_medio_{0};
+	double faturamento_medio_{0.0};
 
-	int faturamento_total_{0};
+	double faturamento_total_{0.0};
 
 	unsigned tempo_espera_medio_{0u};
 
