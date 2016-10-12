@@ -7,6 +7,8 @@
 #ifndef SUPERMERCADO_SUPERMERCADO_H_
 #define SUPERMERCADO_SUPERMERCADO_H_
 
+//#include <string>
+
 #include "./caixa.h"
 #include "structures/circular_list.h"
 
@@ -14,15 +16,15 @@ namespace supermercado {
 
 class SuperMercado {
  public:
-  SuperMercado();
-
 	SuperMercado(std::string, unsigned, unsigned, unsigned);
 
 	~SuperMercado();
-	// GeraCliente() - cliente compras e lugar na fila
 
 	void inicia_simulacao();
 
+	void adiciona_caixa(std::string, unsigned, unsigned);
+
+ private:
 	void atualiza_caixas();
 
 	void gera_cliente();
@@ -35,8 +37,7 @@ class SuperMercado {
 
 	bool lugar_fila();
 
- private:
-	structures::CircularList<Caixa*> *caixas_;
+	structures::CircularList<Caixa*> caixas_;
 	std::string nome_mercado_;
 	unsigned tempo_simulacao_;
 	unsigned tempo_medio_chegada_;
