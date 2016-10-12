@@ -33,12 +33,68 @@ int main(int argc, char* argv[]) {
 		visao.mensagem_tempo_medio_chegada();
 		tempo_medio_chegada = visao.entrada_tempo_medio_chegada();
 
-		visao.mensagem_total_caixas();
-		total_caixas = visao.entrada_total_caixas();
+		visao.mensagem_numero_caixas();
+		total_caixas = visao.entrada_numero_caixas();
 
 	}
-	supermercado::SuperMercado supermercado = new supermercado::SuperMercado(nome_supermercado, tempo_simulacao, tempo_medio_chegada, total_caixas); // Gera supermercado com informações dadas pelo usuário
+
+	supermercado::SuperMercado *supermercado = new supermercado::SuperMercado(nome_supermercado, tempo_simulacao, tempo_medio_chegada, total_caixas); // Gera supermercado com informações dadas pelo usuário
 
 	// Instancia Caixas
+	for (unsigned i = 0; i < total_caixas; i++) {
+		visao.mensagem_identificador_caixa();
+		std::string identificador = visao.entrada_identificador_caixa();
+		visao.mensagem_eficiencia_caixa();
+		unsigned eficiencia = visao.entrada_eficiencia_caixa();
+		visao.mensagem_salario_caixa();
+		unsigned salario = visao.entrada_salario_caixa();
+		supermercado->adiciona_caixa(identificador, eficiencia, salario);
+	}
+
+	supermercado->inicia_simulacao();
+
+	// Estatística
+
+	// Faturamento total do supermercado no período
+	double faturamento_total_supermercado;
+	for (unsigned i = 0; i < supermercado->caixas().size(); i++) {
+		faturamento_total_supermercado += supermercado->caixas().at(i)->faturamento_total();
+	}
+	visao.mensagem_faturamento_total_supermercado(faturamento_total_supermercado);
+
+	visao.mensagem_informacoes_caixas();
+
+	for (unsigned i = 0; i < supermercado->caixas().size(); i++) {
+		supermercado::Caixa* caixa = supermercado->caixas().at(i);
+
+		visao.mensagem_linha_divisoria();
+
+		// Faturamento médio por caixa
+		visao.mensagem_nome_do_caixa(caixa->identificador());
+
+		// Clientes atendidos
+		visao.mensagem_numero_clientes_atendidos(caixa->clientes_atendidos());
+
+		// Faturamento real de cada caixa
+		visao.mensagem_faturamento_medio_caixa(caixa->faturamento_medio());
+
+		// Lucro por caixa, descontando-se o salario deste caixa
+		//visao.mensagem_lucro_por_caixa(caixa->) // Terminar <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+		// Tempo médio de permanência de um cliente na fila
+		visao.mensagem_tempo_medio_permanencia_fila(caixa->tempo_espera_medio());
+	}
+
+	visao.mensagem_linha_divisoria();
+
+	// Número de clientes que desistiram  porque a fila estava muito longa
+	visao.mensagem_numero_clientes_desistiram(supermercado->numero_desistencias());
+
+	// Faturamento que deixou de ser realizado em função dos clientes que desistiram
+	visao.mensagem_faturamento_perdido(supermercado->valor_perdido());
+
+	visao.mensagem_nome_do_supermercado(supermercado->nome_mercado());
+	// O nome do supermercado lido do arquivo de configuração deve aparecer na tela quando o sistema terminar a simulação
+
 	return 0;
 }
