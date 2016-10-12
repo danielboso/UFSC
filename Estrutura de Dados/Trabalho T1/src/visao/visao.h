@@ -19,7 +19,7 @@ public:
 
 	void mensagem_forma_execucao();
 
-	std::string entrada_forma_execucao();
+	bool entrada_forma_execucao();
 
 	void mensagem_numero_caixas();
 
@@ -59,15 +59,15 @@ public:
 
 	void mensagem_tempo_simulacao();
 
-	std::string entrada_tempo_simulacao();
+	unsigned entrada_tempo_simulacao();
 
 	void mensagem_tempo_medio_chegada();
 
-	std::string entrada_tempo_medio_chegada();
+ 	unsigned entrada_tempo_medio_chegada();
 
 	void mensagem_total_caixas();
 
-	std::string entrada_total_caixas();
+	unsigned entrada_total_caixas();
 };
 
 } /* namespace supermercado */
