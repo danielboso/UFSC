@@ -35,6 +35,10 @@ void SuperMercado::adiciona_caixa(std::string identificador , unsigned eficienci
 	caixas_.push_front(caixa);
 }
 
+structures::CircularList<Caixa*> SuperMercado::caixas() {
+	return caixas_;
+}
+
 void SuperMercado::atualiza_caixas() {
 	for (auto i = 0u; i != caixas_.size(); ++i) {
 		caixas_.at(i)->retira_cliente(relogio_);
@@ -87,6 +91,18 @@ bool SuperMercado::lugar_fila() {
 		}
 	}
 	return false;
+}
+
+std::string SuperMercado::nome_mercado() {
+	return nome_mercado_;
+}
+
+unsigned SuperMercado::numero_desistencias() {
+	return clientes_desistentes_;
+}
+
+unsigned SuperMercado::valor_perdido() {
+	return valor_perdido_;
 }
 
 }

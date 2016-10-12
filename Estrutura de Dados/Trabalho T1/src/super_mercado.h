@@ -24,6 +24,14 @@ class SuperMercado {
 
 	void adiciona_caixa(std::string, unsigned, unsigned);
 
+  structures::CircularList<Caixa*> caixas();
+
+  std::string nome_mercado();
+
+  unsigned numero_desistencias();
+
+  unsigned valor_perdido();
+
  private:
 	void atualiza_caixas();
 
@@ -42,7 +50,6 @@ class SuperMercado {
 	unsigned tempo_simulacao_;
 	unsigned tempo_medio_chegada_;
 	unsigned total_caixas_;
-
 	unsigned clientes_desistentes_{0u};
 	unsigned valor_perdido_{0u};
 	unsigned relogio_{0u};
