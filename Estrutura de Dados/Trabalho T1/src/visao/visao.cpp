@@ -139,7 +139,14 @@ std::string Visao::entrada_nome_do_supermercado() {
 		try {
 			excecao = false;
 			getline(std::cin, nome_supermercado);
-		} catch(std::invalid_argument e) {
+			if (nome_supermercado == "") {
+				throw ExcecaoEntradaInvalida();
+			}
+		}	catch (ExcecaoEntradaInvalida e) {
+				excecao = true;
+				std::cout << e.what();
+		}
+		catch(std::invalid_argument e) {
 				excecao = true;
 				std::cout << "Argumento Inválido";
 		}
@@ -162,13 +169,14 @@ unsigned Visao::entrada_tempo_simulacao() {
 			getline(std::cin, tempo_simulacao_str);
 			tempo_simulacao = std::stoul(tempo_simulacao_str);
 			if (tempo_simulacao <= 0) {
-				excecao = true;
 				throw ExcecaoEntradaInvalida();
 			}
 		} catch (ExcecaoEntradaInvalida e) {
-			std::cout << e.what();
+				excecao = true;
+				std::cout << e.what();
 		} catch (std::invalid_argument e) {
-			std::cout << "Argumento Inválido!";
+				excecao = true;
+				std::cout << "Argumento Inválido!\n";
 		}
 	}
 	return tempo_simulacao;
@@ -189,13 +197,14 @@ unsigned Visao::entrada_tempo_medio_chegada() {
 			getline(std::cin, tempo_medio_chegada_str);
 			tempo_medio_chegada = std::stoul(tempo_medio_chegada_str);
 			if (tempo_medio_chegada <= 0) {
-				excecao = true;
 				throw ExcecaoEntradaInvalida();
 			}
 		} catch(ExcecaoEntradaInvalida e) {
+				excecao = true;
 				std::cout << e.what();
 		} catch(std::invalid_argument e) {
-				std::cout << "Entrada Inválida!";
+				excecao = true;
+				std::cout << "Entrada Inválida!\n";
 		}
 	}
 	return tempo_medio_chegada;
@@ -216,13 +225,14 @@ unsigned Visao::entrada_total_caixas() {
 			getline(std::cin, total_caixas_str);
 			total_caixas = std::stoul(total_caixas_str);
 			if (total_caixas <= 0) {
-				excecao = true;
 				throw ExcecaoEntradaInvalida();
 			}
 		} catch(ExcecaoEntradaInvalida e) {
+				excecao = true;
 				std::cout << e.what();
 		} catch(std::invalid_argument e) {
-				std::cout << "Entrada Inválida!";
+				excecao = true;
+				std::cout << "Entrada Inválida!\n";
 		}
 	}
 	return total_caixas;
