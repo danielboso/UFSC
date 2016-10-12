@@ -22,6 +22,10 @@ public:
 class ExcecaoEntradaInvalida: public std::exception {
 public:
 	ExcecaoEntradaInvalida(){}
+
+	virtual const char* what() const throw () {
+		return ("Entrada Inválida!\n");
+	}
 };
 
 
