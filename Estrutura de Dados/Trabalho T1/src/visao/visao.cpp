@@ -53,7 +53,7 @@ bool Visao::entrada_forma_execucao() {
 }
 
 void Visao::mensagem_numero_caixas() {
-	std::cout << "Digite o número de caixas que a simulação terá inicialmente:\n";
+	std::cout << "Digite o número de caixas que a simulação terá inicialmente: ";
 }
 
 unsigned Visao::entrada_numero_caixas() {
@@ -81,7 +81,7 @@ unsigned Visao::entrada_numero_caixas() {
 }
 
 void Visao::mensagem_identificador_caixa() {
-	std::cout << "Digite o identificador do caixa:\n";
+	std::cout << "Digite o identificador do caixa: ";
 }
 
 std::string Visao::entrada_identificador_caixa() {
@@ -92,7 +92,13 @@ std::string Visao::entrada_identificador_caixa() {
 		try {
 			excecao = false;
 			getline(std::cin, identificador);
-		} catch(std::invalid_argument e) {
+			if (identificador == "") {
+				throw ExcecaoEntradaInvalida();
+			}
+		} catch (ExcecaoEntradaInvalida e) {
+			excecao = true;
+			std::cout << e.what();
+		}	catch(std::invalid_argument e) {
 			excecao = true;
 			std::cout << "Argumento Inválido!\n";
 		}
@@ -132,7 +138,7 @@ unsigned Visao::entrada_eficiencia_caixa() {
 }
 
 void Visao::mensagem_salario_caixa() {
-	std::cout << "Digite o salário do caixa:\n";
+	std::cout << "Digite o salário do caixa: ";
 }
 
 unsigned Visao::entrada_salario_caixa() {
@@ -160,11 +166,11 @@ unsigned Visao::entrada_salario_caixa() {
 }
 
 void Visao::mensagem_faturamento_total_supermercado(int faturamento) {
-	std::cout << "\tFaturamento total: " << faturamento;
+	std::cout << "\nFaturamento total do supermercado: " << faturamento << "\n";
 }
 
 void Visao::mensagem_faturamento_medio_caixa(double faturamento_medio) {
-	std::cout << "\tFaturamento médio: " << faturamento_medio;
+	std::cout << "\tFaturamento médio: " << faturamento_medio << "\n";
 }
 
 void Visao::mensagem_faturamento_real_cada_caixa(int faturamento_real) {
@@ -176,19 +182,19 @@ void Visao::mensagem_lucro_por_caixa(int lucro_caixa) {
 }
 
 void Visao::mensagem_tempo_medio_permanencia_fila(double tempo_medio) {
-	std::cout << "\tTempo médio de permanência na fila: " << tempo_medio;
+	std::cout << "\tTempo médio de permanência na fila: " << tempo_medio << "\n";
 }
 
 void Visao::mensagem_numero_clientes_desistiram(int numero_desistencias) {
-	std::cout << "\tNúmero clientes que desistiram: " << numero_desistencias;
+	std::cout << "Número clientes que desistiram: " << numero_desistencias << "\n";
 }
 
-void Visao::mensagem_faturamento_perdido(int faturamento_perdido) {
-	std::cout << "\tFaturamento perdido: " << faturamento_perdido;
+void Visao::mensagem_faturamento_perdido(double faturamento_perdido) {
+	std::cout << "Faturamento perdido: " << faturamento_perdido << "\n";
 }
 
 void Visao::mensagem_nome_do_supermercado(std::string nome_supermercado) {
-	std::cout << "Nome do supermercado: " << nome_supermercado;
+	std::cout << "Nome do supermercado: " << nome_supermercado << "\n";
 }
 
 void Visao::mensagem_nome_do_supermercado() {
@@ -272,6 +278,23 @@ unsigned Visao::entrada_tempo_medio_chegada() {
 		}
 	}
 	return tempo_medio_chegada;
+}
+
+void Visao::mensagem_informacoes_caixas() {
+	std::cout << "--------------------------------------------\n";
+	std::cout << "Informações sobre os caixas:\n";
+}
+
+void Visao::mensagem_linha_divisoria() {
+	std::cout << "--------------------------------------------\n";
+}
+
+void Visao::mensagem_nome_do_caixa(std::string nome_caixa) {
+	std::cout << "Nome do caixa: " << nome_caixa << "\n";
+}
+
+void Visao::mensagem_numero_clientes_atendidos(unsigned clientes_atendidos) {
+	std::cout << "Número clientes atendidos: " << clientes_atendidos << "\n";
 }
 
 } /* namespace supermercado */

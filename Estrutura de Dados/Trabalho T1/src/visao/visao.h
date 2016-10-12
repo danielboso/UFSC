@@ -49,7 +49,7 @@ public:
 
 	void mensagem_numero_clientes_desistiram(int);
 
-	void mensagem_faturamento_perdido(int);
+	void mensagem_faturamento_perdido(double);
 
 	void mensagem_nome_do_supermercado(std::string);
 
@@ -64,6 +64,14 @@ public:
 	void mensagem_tempo_medio_chegada();
 
  	unsigned entrada_tempo_medio_chegada();
+
+	void mensagem_informacoes_caixas();
+
+	void mensagem_linha_divisoria();
+
+	void mensagem_nome_do_caixa(std::string);
+
+	void mensagem_numero_clientes_atendidos(unsigned);
 };
 
 } /* namespace supermercado */
