@@ -294,7 +294,35 @@ void Visao::mensagem_nome_do_caixa(std::string nome_caixa) {
 }
 
 void Visao::mensagem_numero_clientes_atendidos(unsigned clientes_atendidos) {
-	std::cout << "Número clientes atendidos: " << clientes_atendidos << "\n";
+	std::cout << "\tNúmero clientes atendidos: " << clientes_atendidos << "\n";
+}
+
+void Visao::mensagem_tamanho_maximo_fila() {
+	std::cout << "Digite o tamanho máximo que as filas podem atingir antes de chamar um novo caixa: ";
+}
+
+unsigned Visao::entrada_tamanho_maximo_fila() {
+	std::string tamanho_maximo_str;
+	unsigned tamanho_maximo;
+	bool excecao = true;
+
+	while(excecao) {
+		try {
+			excecao = false;
+			getline(std::cin, tamanho_maximo_str);
+			tamanho_maximo = std::stoul(tamanho_maximo_str);
+			if (tamanho_maximo <= 0) {
+				throw ExcecaoEntradaInvalida();
+			}
+		} catch(ExcecaoEntradaInvalida e) {
+				excecao = true;
+				std::cout << e.what();
+		} catch(std::invalid_argument e) {
+				excecao = true;
+				std::cout << "Entrada Inválida!\n";
+		}
+	}
+	return tamanho_maximo;
 }
 
 } /* namespace supermercado */

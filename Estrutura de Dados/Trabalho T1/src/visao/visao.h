@@ -72,6 +72,10 @@ public:
 	void mensagem_nome_do_caixa(std::string);
 
 	void mensagem_numero_clientes_atendidos(unsigned);
+
+	void mensagem_tamanho_maximo_fila();
+
+	unsigned entrada_tamanho_maximo_fila();
 };
 
 } /* namespace supermercado */
