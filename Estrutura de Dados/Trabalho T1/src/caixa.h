@@ -54,6 +54,8 @@ public:
 
 	unsigned clientes_atendidos();
 
+	structures::LinkedQueue<Cliente*>* clientes();
+
 private:
 	structures::LinkedQueue<Cliente*> *clientes_;
 

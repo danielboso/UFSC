@@ -26,7 +26,7 @@ void Caixa::recebe_cliente(Cliente* cliente) {
 
 void Caixa::retira_cliente(const unsigned& tempo) {
 	if (clientes_->size() != 0) {
-		if (clientes_->front()->tempo_saida() == tempo) {
+		if (clientes_->front()->tempo_saida() <= tempo) {
 			produtos_pendentes_ -= clientes_->front()->quantidade_itens();
 			faturamento_total_ += clientes_->front()->valor_total();
 			faturamento_medio(clientes_->front()->valor_total());
@@ -88,6 +88,10 @@ const unsigned Caixa::produtos_pendentes() const { return produtos_pendentes_; }
 const unsigned Caixa::clientes_fila() const { return clientes_->size(); }
 
 const unsigned Caixa::clientes_atendidos() const { return clientes_atendidos_; }
+
+structures::LinkedQueue<Cliente*>* Caixa::clientes() {
+	return clientes_;
+}
 
 void Caixa::faturamento_medio(int valor) {
 	if (faturamento_medio_ == 0) {
