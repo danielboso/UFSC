@@ -36,7 +36,7 @@ void SuperMercado::adiciona_caixa(std::string identificador , unsigned eficienci
 
 void SuperMercado::atualiza_caixas() {
 	for (auto i = 0u; i != caixas_.size(); ++i) {
-		delete caixas_.at(i)->retira_cliente(relogio_);
+		caixas_.at(i)->retira_cliente(relogio_);
 	}
 }
 
