@@ -52,6 +52,8 @@ public:
 
 	const unsigned tempo_espera_medio() const;
 
+	unsigned clientes_atendidos();
+
 private:
 	structures::LinkedQueue<Cliente*> *clientes_;
 
@@ -70,6 +72,8 @@ private:
 	double faturamento_total_{0.0};
 
 	unsigned tempo_espera_medio_{0u};
+
+	double lucro_caixa;
 
 };
 

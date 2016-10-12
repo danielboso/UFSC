@@ -25,13 +25,15 @@ void Caixa::recebe_cliente(Cliente* cliente) {
 }
 
 void Caixa::retira_cliente(const unsigned& tempo) {
-	if (clientes_->front()->tempo_saida() == tempo) {
-		produtos_pendentes_ -= clientes_->front()->quantidade_itens();
-		faturamento_total_ += clientes_->front()->valor_total();
-		faturamento_medio(clientes_->front()->valor_total());
-		tempo_espera_medio(clientes_->front()->tempo_saida() - clientes_->front()->tempo_chegada());
-		++clientes_atendidos_;
-		clientes_->dequeue();
+	if (clientes_->size() != 0) {
+		if (clientes_->front()->tempo_saida() == tempo) {
+			produtos_pendentes_ -= clientes_->front()->quantidade_itens();
+			faturamento_total_ += clientes_->front()->valor_total();
+			faturamento_medio(clientes_->front()->valor_total());
+			tempo_espera_medio(clientes_->front()->tempo_saida() - clientes_->front()->tempo_chegada());
+			++clientes_atendidos_;
+			clientes_->dequeue();
+		}
 	}
 }
 
@@ -107,6 +109,14 @@ void Caixa::tempo_espera_medio(unsigned tempo) {
 	}
 }
 
+unsigned Caixa::clientes_atendidos() {
+	return clientes_atendidos_;
+}
+
 const unsigned Caixa::tempo_espera_medio() const { return tempo_espera_medio_; }
+
+void calcula_lucro_caixa() {
+
+}
 
 }
