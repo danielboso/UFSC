@@ -26,6 +26,7 @@ void SuperMercado::inicia_simulacao() {
 			gera_cliente();
 		}
 		atualiza_caixas();
+		++relogio_;
 	}
 }
 
