@@ -70,74 +70,74 @@ std::string Visao::entrada_salario_caixa() {
 	return opcao;
 }
 
-void mensagem_faturamento_total_supermercado(int faturamento) {
+void Visao::mensagem_faturamento_total_supermercado(int faturamento) {
 	std::cout << "\tFaturamento total: " << faturamento;
 }
 
-void mensagem_faturamento_medio_caixa(double faturamento_medio) {
+void Visao::mensagem_faturamento_medio_caixa(double faturamento_medio) {
 	std::cout << "\tFaturamento médio: " << faturamento_medio;
 }
 
-void mensagem_faturamento_real_cada_caixa(int faturamento_real) {
+void Visao::mensagem_faturamento_real_cada_caixa(int faturamento_real) {
 	std::cout << "\tFaturamento médio:" << faturamento_real;
 }
 
-void mensagem_lucro_por_caixa(int lucro_caixa) {
+void Visao::mensagem_lucro_por_caixa(int lucro_caixa) {
 	std::cout << "\tLucro do caixa: " << lucro_caixa;
 }
 
-void mensagem_tempo_medio_permanencia_fila(double tempo_medio) {
+void Visao::mensagem_tempo_medio_permanencia_fila(double tempo_medio) {
 	std::cout << "\tTempo médio de permanência na fila: " << tempo_medio;
 }
 
-void mensagem_numero_clientes_desistiram(int numero_desistencias) {
+void Visao::mensagem_numero_clientes_desistiram(int numero_desistencias) {
 	std::cout << "\tNúmero clientes que desistiram: " << numero_desistencias;
 }
 
-void mensagem_faturamento_perdido(int faturamento_perdido) {
+void Visao::mensagem_faturamento_perdido(int faturamento_perdido) {
 	std::cout << "\tFaturamento perdido: " << faturamento_perdido;
 }
 
-void mensagem_nome_do_supermercado(std::string nome_supermercado) {
+void Visao::mensagem_nome_do_supermercado(std::string nome_supermercado) {
 	std::cout << "Nome do supermercado: " << nome_supermercado;
 }
 
-void mensagem_nome_do_supermercado() {
+void Visao::mensagem_nome_do_supermercado() {
 	std::cout << "Digite o nome do supermercado: ";
 }
 
-std::string entrada_nome_do_supermercado() {
+std::string Visao::entrada_nome_do_supermercado() {
 	std::string nome_supermercado;
 	getline(std::cin, nome_supermercado);
 	return nome_supermercado;
 }
 
-void mensagem_tempo_simulacao() {
+void Visao::mensagem_tempo_simulacao() {
 	std::cout << "Digite o tempo a ser simulado em horas: ";
 }
 
-unsigned entrada_tempo_simulacao() {
-	unsiged tempo_simulacao;
+std::string Visao::entrada_tempo_simulacao() {
+	std::string tempo_simulacao;
 	getline(std::cin, tempo_simulacao);
 	return tempo_simulacao;
 }
 
-void mensagem_tempo_medio_chegada() {
+void Visao::mensagem_tempo_medio_chegada() {
 	std::cout << "Digite o tempo médio de chegada de clientes: ";
 }
 
-unsigned entrada_tempo_medio_chegada() {
-	unsigned tempo_medio_chegada;
+std::string Visao::entrada_tempo_medio_chegada() {
+	std::string tempo_medio_chegada;
 	getline(std::cin, tempo_medio_chegada);
 	return tempo_medio_chegada;
 }
 
-void mensagem_total_caixas() {
+void Visao::mensagem_total_caixas() {
 	std::cout << "Digite o número de caixas que a simulação terá inicialmente: ";
 }
 
-unsigned entrada_total_caixas() {
-	unsigned total_caixas;
+std::string Visao::entrada_total_caixas() {
+	std::string total_caixas;
 	getline(std::cin, total_caixas);
 	return total_caixas;
 }
