@@ -85,12 +85,12 @@ void Visao::mensagem_identificador_caixa() {
 }
 
 std::string Visao::entrada_identificador_caixa() {
-	std::string identificador_str;
+	std::string identificador;
 	bool excecao = true;
 
 	while(excecao) {
 		try {
-			excecao = false
+			excecao = false;
 			getline(std::cin, identificador);
 		} catch(std::invalid_argument e) {
 			excecao = true;
@@ -143,7 +143,7 @@ unsigned Visao::entrada_salario_caixa() {
 	while (excecao) {
 		try {
 				excecao = false;
-				getline(std::cin, opcao);
+				getline(std::cin, salario_caixa_str);
 				salario_caixa = std::stoul(salario_caixa_str);
 				if (salario_caixa == 0) {
 					throw ExcecaoEntradaInvalida();
