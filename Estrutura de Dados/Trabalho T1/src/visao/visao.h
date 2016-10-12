@@ -23,7 +23,7 @@ public:
 
 	void mensagem_numero_caixas();
 
-	std::string entrada_numero_caixas();
+	unsigned entrada_numero_caixas();
 
 	void mensagem_identificador_caixa();
 
@@ -31,11 +31,11 @@ public:
 
 	void mensagem_eficiencia_caixa();
 
-	std::string entrada_eficiencia_caixa();
+	unsigned entrada_eficiencia_caixa();
 
 	void mensagem_salario_caixa();
 
-	std::string entrada_salario_caixa();
+	unsigned entrada_salario_caixa();
 
 	void mensagem_faturamento_total_supermercado(int);
 
@@ -64,10 +64,6 @@ public:
 	void mensagem_tempo_medio_chegada();
 
  	unsigned entrada_tempo_medio_chegada();
-
-	void mensagem_total_caixas();
-
-	unsigned entrada_total_caixas();
 };
 
 } /* namespace supermercado */

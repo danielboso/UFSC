@@ -56,10 +56,28 @@ void Visao::mensagem_numero_caixas() {
 	std::cout << "Digite o número de caixas que a simulação terá inicialmente:\n";
 }
 
-std::string Visao::entrada_numero_caixas() {
-	std::string numeroCaixas;
-	getline(std::cin, numeroCaixas);
-	return numeroCaixas;
+unsigned Visao::entrada_numero_caixas() {
+	std::string total_caixas_str;
+	unsigned total_caixas;
+	bool excecao = true;
+
+	while(excecao) {
+		try {
+			excecao = false;
+			getline(std::cin, total_caixas_str);
+			total_caixas = std::stoul(total_caixas_str);
+			if (total_caixas <= 0) {
+				throw ExcecaoEntradaInvalida();
+			}
+		} catch(ExcecaoEntradaInvalida e) {
+				excecao = true;
+				std::cout << e.what();
+		} catch(std::invalid_argument e) {
+				excecao = true;
+				std::cout << "Entrada Inválida!\n";
+		}
+	}
+	return total_caixas;
 }
 
 void Visao::mensagem_identificador_caixa() {
@@ -67,8 +85,18 @@ void Visao::mensagem_identificador_caixa() {
 }
 
 std::string Visao::entrada_identificador_caixa() {
-	std::string identificador;
-	getline(std::cin, identificador);
+	std::string identificador_str;
+	bool excecao = true;
+
+	while(excecao) {
+		try {
+			excecao = false
+			getline(std::cin, identificador);
+		} catch(std::invalid_argument e) {
+			excecao = true;
+			std::cout << "Argumento Inválido!\n";
+		}
+	}
 	return identificador;
 }
 
@@ -79,20 +107,56 @@ void Visao::mensagem_eficiencia_caixa() {
 	std::cout << "\t3 para ruim.\n";
 }
 
-std::string Visao::entrada_eficiencia_caixa() {
-	std::string opcao;
-	getline(std::cin, opcao);
-	return opcao;
+unsigned Visao::entrada_eficiencia_caixa() {
+	std::string eficiencia_caixa_str;
+	unsigned eficiencia_caixa;
+	bool excecao = true;
+
+	while (excecao) {
+		try {
+			excecao = false;
+			getline(std::cin, eficiencia_caixa_str);
+			eficiencia_caixa = stoul(eficiencia_caixa_str);
+			if (eficiencia_caixa < 1 || eficiencia_caixa > 3) {
+				throw ExcecaoEntradaInvalida();
+			}
+		} catch(ExcecaoEntradaInvalida e) {
+				excecao = true;
+				std::cout << e.what();
+		} catch(std::invalid_argument e) {
+				excecao = true;
+				std::cout << "Argumento Inválido!\n";
+		}
+	}
+	return eficiencia_caixa;
 }
 
 void Visao::mensagem_salario_caixa() {
 	std::cout << "Digite o salário do caixa:\n";
 }
 
-std::string Visao::entrada_salario_caixa() {
-	std::string opcao;
-	getline(std::cin, opcao);
-	return opcao;
+unsigned Visao::entrada_salario_caixa() {
+	std::string salario_caixa_str;
+	unsigned salario_caixa;
+	bool excecao = true;
+
+	while (excecao) {
+		try {
+				excecao = false;
+				getline(std::cin, opcao);
+				salario_caixa = std::stoul(salario_caixa_str);
+				if (salario_caixa == 0) {
+					throw ExcecaoEntradaInvalida();
+				}
+		} catch(ExcecaoEntradaInvalida e) {
+				excecao = true;
+				std::cout << e.what();
+		} catch(std::invalid_argument e) {
+				excecao = true;
+				std::cout << "Argumento Inválido!\n";
+		}
+	}
+	return salario_caixa;
 }
 
 void Visao::mensagem_faturamento_total_supermercado(int faturamento) {
@@ -161,8 +225,8 @@ void Visao::mensagem_tempo_simulacao() {
 unsigned Visao::entrada_tempo_simulacao() {
 	std::string tempo_simulacao_str;
 	unsigned tempo_simulacao;
-
 	bool excecao = true;
+
 	while(excecao) {
 		try {
 			excecao = false;
@@ -208,34 +272,6 @@ unsigned Visao::entrada_tempo_medio_chegada() {
 		}
 	}
 	return tempo_medio_chegada;
-}
-
-void Visao::mensagem_total_caixas() {
-	std::cout << "Digite o número de caixas que a simulação terá inicialmente: ";
-}
-
-unsigned Visao::entrada_total_caixas() {
-	std::string total_caixas_str;
-	unsigned total_caixas;
-	bool excecao = true;
-
-	while(excecao) {
-		try {
-			excecao = false;
-			getline(std::cin, total_caixas_str);
-			total_caixas = std::stoul(total_caixas_str);
-			if (total_caixas <= 0) {
-				throw ExcecaoEntradaInvalida();
-			}
-		} catch(ExcecaoEntradaInvalida e) {
-				excecao = true;
-				std::cout << e.what();
-		} catch(std::invalid_argument e) {
-				excecao = true;
-				std::cout << "Entrada Inválida!\n";
-		}
-	}
-	return total_caixas;
 }
 
 } /* namespace supermercado */
