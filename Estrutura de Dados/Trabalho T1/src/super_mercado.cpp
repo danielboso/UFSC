@@ -14,7 +14,7 @@ SuperMercado::SuperMercado(std::string nome_mercado, unsigned tempo_simulacao, u
 		tempo_medio_chegada_{tempo_medio_chegada},
 		total_caixas_{total_caixas}
 {
-	caixas_ = new structures::CircularList<Caixa*>();
+	caixas_ = *(new structures::CircularList<Caixa*>());
 }
 
 SuperMercado::~SuperMercado() {}
@@ -30,8 +30,8 @@ void SuperMercado::inicia_simulacao() {
 }
 
 void SuperMercado::adiciona_caixa(std::string identificador , unsigned eficiencia, unsigned salario) {
-	Caixa caixa = new Caixa(identificador, eficiencia, salario);
-	caixas_.push_front(&caixa);
+	Caixa* caixa = new Caixa(identificador, eficiencia, salario);
+	caixas_.push_front(caixa);
 }
 
 void SuperMercado::atualiza_caixas() {
