@@ -12,7 +12,7 @@
 int main(int argc, char* argv[]) {
 
 	supermercado::Visao visao{};
-	supermercado::SuperMercado supermercado;
+	supermercado::SuperMercado *supermercado;
 	visao.mensagem_forma_execucao();
 	std::string forma_execucao;
 	bool ler_arquivo;
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 		while(excecao_tempo_simulacao) {
 			try {
 				excecao_tempo_simulacao = false;
-				tempo_simulacao = visao.entrada_tempo_simulacao();
+				tempo_simulacao = std::stoul(visao.entrada_tempo_simulacao());
 				if (tempo_simulacao <= 0) {
 					throw ExcecaoEntradaInvalida();
 				}
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 		while(excecao_tempo_medio_chegada) {
 			try {
 				excecao_tempo_medio_chegada = false;
-				tempo_medio_chegada = visao.entrada_tempo_medio_chegada();
+				tempo_medio_chegada = std::stoul(visao.entrada_tempo_medio_chegada());
 				if (tempo_medio_chegada <= 0) {
 					throw ExcecaoEntradaInvalida();
 				}
@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
 		while(excecao_total_caixas) {
 			try {
 				excecao_total_caixas = false;
-				total_caixas = visao.entrada_total_caixas();
+				total_caixas = std::stoul(visao.entrada_total_caixas());
 				if (total_caixas <= 0) {
 					throw ExcecaoEntradaInvalida();
 				}
@@ -118,7 +118,8 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		supermercado = new SuperMercado(nome_supermercado, tempo_simulacao, tempo_medio_chegada, total_caixas); // Gera supermercado com informações dadas pelo usuário
+		supermercado = new supermercado::SuperMercado(nome_supermercado, tempo_simulacao, tempo_medio_chegada, total_caixas); // Gera supermercado com informações dadas pelo usuário
+		supermercado->inicia_simulacao();
 	}
 
 	return 0;
