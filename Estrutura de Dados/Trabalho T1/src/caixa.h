@@ -76,7 +76,6 @@ private:
 	unsigned tempo_espera_medio_{0u};
 
 	double lucro_caixa;
-
 };
 
 }  // namespace supermercado
