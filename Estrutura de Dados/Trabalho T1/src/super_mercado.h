@@ -14,6 +14,8 @@ namespace supermercado {
 
 class SuperMercado {
  public:
+  SuperMercado();
+
 	SuperMercado(std::string, unsigned, unsigned, unsigned);
 
 	~SuperMercado();

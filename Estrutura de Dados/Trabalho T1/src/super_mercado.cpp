@@ -8,6 +8,10 @@
 
 namespace supermercado {
 
+SuperMercado::SuperMercado() {
+
+}
+
 SuperMercado::SuperMercado(std::string nome_mercado, unsigned tempo_simulacao, unsigned tempo_medio_chegada, unsigned total_caixas) :
 		nome_mercado_{nome_mercado},
 		tempo_simulacao_{tempo_simulacao},
