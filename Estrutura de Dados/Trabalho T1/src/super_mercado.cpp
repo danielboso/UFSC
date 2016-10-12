@@ -19,17 +19,6 @@ SuperMercado::SuperMercado(std::string nome_mercado, unsigned tempo_simulacao, u
 
 SuperMercado::~SuperMercado() {}
 
-void SuperMercado::inicia_simulacao() {
-	unsigned tempo_limite = (tempo_simulacao_ * 3600) + 1;
-	while (relogio_ != tempo_limite) {
-		if (relogio_ % tempo_medio_chegada_ == 0) {
-			gera_cliente();
-		}
-		atualiza_caixas();
-		++relogio_;
-	}
-}
-
 void SuperMercado::adiciona_caixa(std::string identificador , unsigned eficiencia, unsigned salario) {
 	Caixa* caixa = new Caixa(identificador, eficiencia, salario);
 	caixas_.push_front(caixa);
@@ -103,6 +92,14 @@ unsigned SuperMercado::numero_desistencias() {
 
 unsigned SuperMercado::valor_perdido() {
 	return valor_perdido_;
+}
+
+void SuperMercado::adiciona_tempo_relogio() {
+	++relogio_;
+}
+
+unsigned SuperMercado::relogio() {
+	return relogio_;
 }
 
 }

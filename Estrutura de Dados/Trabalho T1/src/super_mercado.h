@@ -20,8 +20,6 @@ class SuperMercado {
 
 	~SuperMercado();
 
-	void inicia_simulacao();
-
 	void adiciona_caixa(std::string, unsigned, unsigned);
 
   structures::CircularList<Caixa*> caixas();
@@ -32,16 +30,21 @@ class SuperMercado {
 
   unsigned valor_perdido();
 
- private:
-	void atualiza_caixas();
+  void adiciona_tempo_relogio();
+
+  unsigned relogio();
+
+  void atualiza_caixas();
 
 	void gera_cliente();
+
+  Caixa* menor_fila();
+
+ private:
 
 	void calcula_perda(Cliente*);
 
 	Caixa* menos_produtos();
-
-	Caixa* menor_fila();
 
 	bool lugar_fila();
 
