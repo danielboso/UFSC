@@ -78,6 +78,7 @@ private:
 	double lucro_caixa;
 };
 
+
 }  // namespace supermercado
 
 #endif

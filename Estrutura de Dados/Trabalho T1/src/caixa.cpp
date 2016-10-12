@@ -119,5 +119,8 @@ unsigned Caixa::clientes_atendidos() {
 
 const unsigned Caixa::tempo_espera_medio() const { return tempo_espera_medio_; }
 
+void calcula_lucro_caixa() {
+
+}
 
 }
