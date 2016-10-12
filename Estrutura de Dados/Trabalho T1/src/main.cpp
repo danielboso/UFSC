@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
 	unsigned tempo_simulacao;
 	unsigned tempo_medio_chegada;
 	unsigned total_caixas;
+	unsigned tamanho_maximo_fila;
 
 	if (ler_arquivo) {
 		// Gera supermercado com leitura pelo arquivo
@@ -36,6 +37,9 @@ int main(int argc, char* argv[]) {
 		visao.mensagem_numero_caixas();
 		total_caixas = visao.entrada_numero_caixas();
 
+		visao.mensagem_tamanho_maximo_fila();
+		tamanho_maximo_fila = visao.entrada_tamanho_maximo_fila();
+
 	}
 
 	supermercado::SuperMercado *supermercado = new supermercado::SuperMercado(nome_supermercado, tempo_simulacao, tempo_medio_chegada, total_caixas); // Gera supermercado com informações dadas pelo usuário
@@ -51,7 +55,25 @@ int main(int argc, char* argv[]) {
 		supermercado->adiciona_caixa(identificador, eficiencia, salario);
 	}
 
-	supermercado->inicia_simulacao();
+	unsigned tempo_limite = (tempo_simulacao * 3600) + 1;
+	while (supermercado->relogio() != tempo_limite) {
+		if (supermercado->relogio() % tempo_medio_chegada == 0) {
+			if (supermercado->menor_fila()->clientes()->size() >= tamanho_maximo_fila) {
+				visao.mensagem_identificador_caixa();
+				std::string identificador = visao.entrada_identificador_caixa();
+				visao.mensagem_eficiencia_caixa();
+				unsigned eficiencia = visao.entrada_eficiencia_caixa();
+				visao.mensagem_salario_caixa();
+				unsigned salario = visao.entrada_salario_caixa();
+				supermercado->adiciona_caixa(identificador, eficiencia, salario);
+			}
+			supermercado->gera_cliente();
+		}
+		supermercado->atualiza_caixas();
+		supermercado->adiciona_tempo_relogio();
+	}
+
+	//supermercado->inicia_simulacao();
 
 	// Estatística
 
