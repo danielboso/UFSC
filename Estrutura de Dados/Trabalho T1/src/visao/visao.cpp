@@ -187,7 +187,7 @@ unsigned Visao::entrada_eficiencia_caixa() {
  *	informar o salário do caixa.
  */
 void Visao::mensagem_salario_caixa() {
-	std::cout << "Digite o salário do caixa: ";
+	std::cout << "Digite o salário do caixa (Por Hora): ";
 }
 
 //! Captura de dados
