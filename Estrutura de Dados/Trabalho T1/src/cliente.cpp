@@ -10,10 +10,6 @@
 
 namespace supermercado {
 
-//! Construtor Padrão.
-/*!	Usado para criar o objeto com valores padrão.	*/
-Cliente::Cliente() {}
-
 //! Construtor com parametros.
 /*!	Usado para criar o objeto com tempo de chegada.
  * 	\param tempo_chegada_ um int que indica o tempo que Cliente chegou.
