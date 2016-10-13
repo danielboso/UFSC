@@ -11,6 +11,8 @@
 
 namespace supermercado {
 
+//! enum tipo_cliente
+/*!	Responsavel por indicar tipos possiveis de ação.*/
 enum tipo_cliente {MENOR_FILA, MENOS_PRODUTOS};
 
 //! Classe Cliente
@@ -18,10 +20,6 @@ enum tipo_cliente {MENOR_FILA, MENOS_PRODUTOS};
  */
 class Cliente {
 public:
-	//! Construtor Padrão.
-	/*! Usado para criar o objeto com valores padrão.	*/
-	Cliente();
-
 	//! Construtor com parametros.
 	/*!	Usado para criar o objeto com tempo de chegada.	*/
 	Cliente(unsigned);
