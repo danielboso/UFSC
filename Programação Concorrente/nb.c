@@ -35,6 +35,7 @@ unsigned num_threads; /* Number of threads used for simulating */
 unsigned range;
 pthread_t *threads;  /* Array que armazena as threads */
 pthread_mutex_t global_mutex;
+int npart;
 
 double Random(void)
 /* ----------------------------------------------------------------
@@ -69,7 +70,7 @@ void    ParallelFunc(void (*f)(void*));
 
 int main(int argc, char **argv)
 {
-    int         npart, i, j;
+    int         i, j;
     int         cnt;         /* number of times in loop */
     double      sim_t;       /* Simulation time */
     //int         tmp;
@@ -196,7 +197,7 @@ void *ComputeForces(void *tid) {
 void ParallelComputeForces() {
     int i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, ComputeForces, (void*)i)
+        pthread_create(threads[i], NULL, ComputeForces, (void*)i);
     }
 
     for (i = 0; i != num_threads; ++i) {
@@ -218,7 +219,7 @@ void *ComputeNewPos(void *tid) {
     a0	 = 2.0 / (dt * (dt + dt_old));
     a2	 = 2.0 / (dt_old * (dt + dt_old));
     a1	 = -(a0 + a2);
-    for (i = 0; i !+ npart; ++i) {
+    for (i = 0; i != npart; ++i) {
         double xi, yi;
         xi	           = particles[i].x;
         yi	           = particles[i].y;
@@ -249,7 +250,7 @@ void *ComputeNewPos(void *tid) {
 void ParallelComputeNewPos() {
     int i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, ComputeNewPos, (void*)i)
+        pthread_create(threads[i], NULL, ComputeNewPos, i);
     }
 
     for (i = 0; i != num_threads; ++i) {
@@ -260,7 +261,7 @@ void ParallelComputeNewPos() {
 void ParallelFunc(void (*f)(void*)) {
     int i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, f, (void*)i)
+        pthread_create(threads[i], NULL, f, i);
     }
     for (i = 0; i != num_threads; ++i) {
         pthread_join(threads[i], NULL);
