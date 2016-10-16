@@ -3,6 +3,7 @@
  *  \Copyright (C) 2016  Adan Pereira Gomes and Daniel Boso
  *  \Released under the GNU General Public License 2.0
  */
+#include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -65,10 +66,12 @@ static void    *ComputeForces(void*);
 void    ParallelComputeForces();
 static void    *ComputeNewPos(void*);
 void    ParallelComputeNewPos();
-void    ParallelFunc(void (*f)(void*));
+//void    ParallelFunc(void* (*f)(void*));
+void    ParallelFunc(void*);
 
 int main(int argc, char **argv)
 {
+    fprintf(stdout, "\n\nCOMECOU 0 !!!\n\n");
     int         i, j;
     int         cnt;         /* number of times in loop */
     double      sim_t;       /* Simulation time */
@@ -77,7 +80,7 @@ int main(int argc, char **argv)
 		printf("Wrong number of parameters.\nUsage: nbody num_bodies timesteps\n");
 		exit(1);
 	}
-
+    fprintf(stdout, "\n\nCOMECOU 1 !!!\n\n");
 	npart = atoi(argv[1]);
 	cnt = atoi(argv[2]);
 	num_threads = atoi(argv[3]);
@@ -85,23 +88,27 @@ int main(int argc, char **argv)
 	dt_old = 0.001;
 	dt_tmp = 0.0;
 	range = npart / num_threads;
-
+    fprintf(stdout, "\n\nCOMECOU 2 !!!\n\n");
     /* Allocate memory for particles */
     particles = (Particle *) malloc(sizeof(Particle)*npart);
     pv = (ParticleV *) malloc(sizeof(ParticleV)*npart);
-
+    threads = (pthread_t*)malloc(sizeof(pthread_t)*num_threads);
+    fprintf(stdout, "\n\nCOMECOU 3 !!!\n\n");
     /* Init mutex */
     pthread_mutex_init(&global_mutex, NULL);
 
     /* Generate the initial values */
-    ParallelFunc(InitParticles);
+    ParallelFunc(&InitParticles);
+    //ParallelInitParticles();
     sim_t = 0.0;
-
+    fprintf(stdout, "\n\nCOMECOU 4 !!!\n\n");
     while (cnt--) {
       /* Compute forces (2D only) */
-      ParallelFunc(ComputeForces);
+      ParallelFunc(&ComputeForces);
+      //ParallelComputeForces();
       /* Once we have the forces, we compute the changes in position */
-      ParallelFunc(ComputeNewPos);
+      ParallelFunc(&ComputeNewPos);
+      //ParallelComputeNewPos();
       sim_t += dt_tmp;
     }
 
@@ -113,6 +120,7 @@ int main(int argc, char **argv)
 
     free(particles);
     free(pv);
+    free(threads);
 
     return 0;
 }
@@ -122,7 +130,7 @@ static void *InitParticles(void *tid)
     unsigned begin_range = range * ((unsigned)tid);
     unsigned end_range = begin_range + range;
 
-    if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
+    if (((unsigned)tid) == num_threads - 1 && num_threads % 2 != 0) {
         end_range = npart;
     }
 
@@ -139,16 +147,17 @@ static void *InitParticles(void *tid)
         pv[i].fy	  = 0;
         pv[i].fz	  = 0;
     }
+    pthread_join(pthread_self(), NULL);
 }
 
 void ParallelInitParticles() {
     int i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, InitParticles, (void*)i);
+        pthread_create(&threads[i], NULL, InitParticles, (void*)i);
     }
 
     for (i = 0; i != num_threads; ++i) {
-        pthread_join(threads[i], NULL);
+        pthread_join(&threads[i], NULL);
     }
 }
 
@@ -156,7 +165,7 @@ static void *ComputeForces(void *tid) {
     unsigned begin_range = range * ((unsigned)tid);
     unsigned end_range = begin_range + range;
 
-    if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
+    if (((unsigned)tid) == num_threads - 1 && num_threads % 2 != 0) {
         end_range = npart;
     }
 
@@ -196,11 +205,11 @@ static void *ComputeForces(void *tid) {
 void ParallelComputeForces() {
     int i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, ComputeForces, (void*)i);
+        pthread_create(&threads[i], NULL, ComputeForces, (void*)i);
     }
 
     for (i = 0; i != num_threads; ++i) {
-        pthread_join(threads[i], NULL);
+        pthread_join(&threads[i], NULL);
     }
 }
 
@@ -208,7 +217,7 @@ static void *ComputeNewPos(void *tid) {
     unsigned begin_range = range * ((unsigned)tid);
     unsigned end_range = begin_range + range;
 
-    if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
+    if (((unsigned)tid) == num_threads - 1 && num_threads % 2 != 0) {
         end_range = npart;
     }
 
@@ -249,20 +258,21 @@ static void *ComputeNewPos(void *tid) {
 void ParallelComputeNewPos() {
     int i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, ComputeNewPos, (void*)i);
+        pthread_create(&threads[i], NULL, ComputeNewPos, (void*)i);
     }
 
     for (i = 0; i != num_threads; ++i) {
-        pthread_join(threads[i], NULL);
+        pthread_join(&threads[i], NULL);
     }
 }
 
-void ParallelFunc(void (*f)(void*)) {
+//void ParallelFunc(void* (*f)(void*)) {
+void ParallelFunc(void* function) {
     unsigned i;
     for (i = 0; i != num_threads; ++i) {
-        pthread_create(threads[i], NULL, f, (void*)i);
+        pthread_create(&threads[i], NULL, function, (void*)i);
     }
-    for (i = 0; i != num_threads; ++i) {
-        pthread_join(threads[i], NULL);
-    }
+//    for (i = 0; i != num_threads; ++i) {
+//        pthread_join(&threads[i], NULL);
+//    }
 }
