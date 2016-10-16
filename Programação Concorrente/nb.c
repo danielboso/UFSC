@@ -15,13 +15,26 @@
 #define MULTIPLIER 48271
 #define DEFAULT    123456789
 
-static long seed = DEFAULT;
+typedef struct {
+    double x, y, z;
+    double mass;
+} Particle;
+
+typedef struct {
+    double xold, yold, zold;
+    double fx, fy, fz;
+} ParticleV;
+
 Particle  * particles;   /* Particles */
 ParticleV * pv;          /* Particle velocity */
-double dt, dt_old; /* Alterado de static para global */
+
+static long seed = DEFAULT;
+double global_max_f;
+double dt, dt_old, dt_tmp; /* Alterado de static para global */
 unsigned num_threads; /* Number of threads used for simulating */
 unsigned range;
 pthread_t *threads;  /* Array que armazena as threads */
+pthread_mutex_t global_mutex;
 
 double Random(void)
 /* ----------------------------------------------------------------
@@ -46,29 +59,20 @@ double Random(void)
  * End of the pRNG algorithm
  */
 
-typedef struct {
-    double x, y, z;
-    double mass;
-} Particle;
-
-typedef struct {
-    double xold, yold, zold;
-    double fx, fy, fz;
-} ParticleV;
-
-void *InitParticles();
-void InitParticles(void *argc);
-double *ComputeForces( Particle [], Particle [], ParticleV [], int );
-double ComputeForces( Particle [], Particle [], ParticleV [], int );
-double *ComputeNewPos( Particle [], ParticleV [], int, double);
-double ComputeNewPos( Particle [], ParticleV [], int, double);
+void    *InitParticles(void*);
+void    ParallelInitParticles();
+void    *ComputeForces(void*);
+void    ParallelComputeForces();
+void    *ComputeNewPos(void*);
+void    ParallelComputeNewPos();
+void    ParallelFunc(void (*f)(void*));
 
 int main(int argc, char **argv)
 {
     int         npart, i, j;
     int         cnt;         /* number of times in loop */
     double      sim_t;       /* Simulation time */
-    int tmp;
+    //int         tmp;
     if(argc != 3){
 		printf("Wrong number of parameters.\nUsage: nbody num_bodies timesteps\n");
 		exit(1);
@@ -76,29 +80,36 @@ int main(int argc, char **argv)
 
 	npart = atoi(argv[1]);
 	cnt = atoi(argv[2]);
-	num_threads = strtoul(argv[3]);
+	num_threads = atoi(argv[3]);
 	dt = 0.001;
 	dt_old = 0.001;
+	dt_tmp = 0.0;
 	range = npart / num_threads;
 
     /* Allocate memory for particles */
     particles = (Particle *) malloc(sizeof(Particle)*npart);
     pv = (ParticleV *) malloc(sizeof(ParticleV)*npart);
 
+    /* Init mutex */
+    pthread_mutex_init(&global_mutex, NULL);
+
     /* Generate the initial values */
-    InitParticles( particles, pv, npart);
+    ParallelFunc(InitParticles);
     sim_t = 0.0;
 
     while (cnt--) {
-      double max_f;
       /* Compute forces (2D only) */
-      max_f = ComputeForces( particles, particles, pv, npart );
+      ParallelFunc(ComputeForces);
       /* Once we have the forces, we compute the changes in position */
-      sim_t += ComputeNewPos( particles, pv, npart, max_f);
+      ParallelFunc(ComputeNewPos);
+      sim_t += dt_tmp;
     }
+
     for (i=0; i<npart; i++) {
         fprintf(stdout,"%.5lf %.5lf\n", particles[i].x, particles[i].y);
     }
+
+    pthread_mutex_destroy(&global_mutex);
 
     free(particles);
     free(pv);
@@ -108,8 +119,8 @@ int main(int argc, char **argv)
 
 void *InitParticles(void *tid)
 {
-    begin_range = range * ((unsigned*)tid);
-    end_range = initial_range + range;
+    int begin_range = range * ((unsigned*)tid);
+    unsigned end_range = initial_range + range;
 
     if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
         ++end_range;
@@ -141,7 +152,7 @@ void ParallelInitParticles() {
     }
 }
 
-double *ComputeForces(void *tid) {
+void *ComputeForces(void *tid) {
     begin_range = range * ((unsigned*)tid);
     end_range = initial_range + range;
 
@@ -177,10 +188,12 @@ double *ComputeForces(void *tid) {
         fx = sqrt(fx*fx + fy*fy)/rmin;
         if (fx > max_f) max_f = fx;
   }
-  return max_f;
+  pthread_mutex_lock(&global_mutex);
+  if (max_f > global_max_f) global_max_f = max_f;
+  pthread_mutex_unlock(&global_mutex);
 }
 
-double ParallelComputeForces() {
+void ParallelComputeForces() {
     int i;
     for (i = 0; i != num_threads; ++i) {
         pthread_create(threads[i], NULL, ComputeForces, (void*)i)
@@ -191,7 +204,7 @@ double ParallelComputeForces() {
     }
 }
 
-double *ComputeNewPos(void *tid) {
+void *ComputeNewPos(void *tid) {
     begin_range = range * ((unsigned*)tid);
     end_range = initial_range + range;
 
@@ -205,7 +218,7 @@ double *ComputeNewPos(void *tid) {
     a0	 = 2.0 / (dt * (dt + dt_old));
     a2	 = 2.0 / (dt_old * (dt + dt_old));
     a1	 = -(a0 + a2);
-    for (i=0; i<npart; i++) {
+    for (i = 0; i !+ npart; ++i) {
         double xi, yi;
         xi	           = particles[i].x;
         yi	           = particles[i].y;
@@ -216,7 +229,7 @@ double *ComputeNewPos(void *tid) {
         pv[i].fx       = 0;
         pv[i].fy       = 0;
     }
-    dt_new = 1.0/sqrt(max_f);
+    dt_new = 1.0/sqrt(global_max_f);
     /* Set a minimum: */
     if (dt_new < 1.0e-6) dt_new = 1.0e-6;
     /* Modify time step */
@@ -228,15 +241,27 @@ double *ComputeNewPos(void *tid) {
         dt_old = dt;
         dt    *= 2.0;
     }
-    return dt_old;
+    pthread_mutex_lock(&global_mutex);
+    if (dt_old != dt_tmp) dt_tmp = dt_old;
+    pthread_mutex_unlock(&global_mutex);
 }
 
-double ParallelComputeNewPos() {
+void ParallelComputeNewPos() {
     int i;
     for (i = 0; i != num_threads; ++i) {
         pthread_create(threads[i], NULL, ComputeNewPos, (void*)i)
     }
 
+    for (i = 0; i != num_threads; ++i) {
+        pthread_join(threads[i], NULL);
+    }
+}
+
+void ParallelFunc(void (*f)(void*)) {
+    int i;
+    for (i = 0; i != num_threads; ++i) {
+        pthread_create(threads[i], NULL, f, (void*)i)
+    }
     for (i = 0; i != num_threads; ++i) {
         pthread_join(threads[i], NULL);
     }
