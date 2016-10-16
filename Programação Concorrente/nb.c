@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     int         cnt;         /* number of times in loop */
     double      sim_t;       /* Simulation time */
     //int         tmp;
-    if(argc != 3){
+    if(argc != 4){
 		printf("Wrong number of parameters.\nUsage: nbody num_bodies timesteps\n");
 		exit(1);
 	}
@@ -123,7 +123,7 @@ static void *InitParticles(void *tid)
     unsigned end_range = begin_range + range;
 
     if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
-        ++end_range;
+        end_range = npart;
     }
 
     int i;
@@ -157,7 +157,7 @@ static void *ComputeForces(void *tid) {
     unsigned end_range = begin_range + range;
 
     if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
-        ++end_range;
+        end_range = npart;
     }
 
     double max_f;
@@ -209,7 +209,7 @@ static void *ComputeNewPos(void *tid) {
     unsigned end_range = begin_range + range;
 
     if (((unsigned*)tid) == num_threads - 1 && num_threads % 2 != 0) {
-        ++end_range;
+        end_range = npart;
     }
 
     int i;
@@ -218,7 +218,7 @@ static void *ComputeNewPos(void *tid) {
     a0	 = 2.0 / (dt * (dt + dt_old));
     a2	 = 2.0 / (dt_old * (dt + dt_old));
     a1	 = -(a0 + a2);
-    for (i = 0; i != npart; ++i) {
+    for (i = begin_range; i != end_range; ++i) {
         double xi, yi;
         xi	           = particles[i].x;
         yi	           = particles[i].y;
