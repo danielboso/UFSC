@@ -33,6 +33,15 @@ void SuperMercado::adiciona_caixa(std::string identificador , unsigned eficienci
 	caixas_.push_front(caixa);
 }
 
+//! Função adiciona_caixa
+/*!
+ *	Função responsável por adicionar um caixa no supermercado.
+ */
+void SuperMercado::adiciona_caixa(std::string identificador, unsigned eficiencia, unsigned salario, unsigned tempo_chegada) {
+	Caixa* caixa = new Caixa(identificador, eficiencia, salario, tempo_chegada);
+	caixas_.push_front(caixa);
+}
+
 //! Função caixas_
 /*!
  *	Função responsável por retornar a lista circular de caixas.
