@@ -58,22 +58,20 @@ int main(int argc, char* argv[]) {
 	unsigned tempo_limite = (tempo_simulacao * 3600) + 1;
 	while (supermercado->relogio() != tempo_limite) {
 		if (supermercado->relogio() % tempo_medio_chegada == 0) {
-			if (supermercado->menor_fila()->clientes()->size() >= tamanho_maximo_fila) {
+			if (supermercado->menor_fila()->clientes_fila() >= tamanho_maximo_fila) {
 				visao.mensagem_identificador_caixa();
 				std::string identificador = visao.entrada_identificador_caixa();
 				visao.mensagem_eficiencia_caixa();
 				unsigned eficiencia = visao.entrada_eficiencia_caixa();
 				visao.mensagem_salario_caixa();
 				unsigned salario = visao.entrada_salario_caixa();
-				supermercado->adiciona_caixa(identificador, eficiencia, salario);
+				supermercado->adiciona_caixa(identificador, eficiencia, salario, supermercado->relogio());
 			}
 			supermercado->gera_cliente();
 		}
 		supermercado->atualiza_caixas();
 		supermercado->adiciona_tempo_relogio();
 	}
-
-	//supermercado->inicia_simulacao();
 
 	// Estatística
 
@@ -82,6 +80,8 @@ int main(int argc, char* argv[]) {
 	for (unsigned i = 0; i < supermercado->caixas().size(); i++) {
 		faturamento_total_supermercado += supermercado->caixas().at(i)->faturamento_total();
 	}
+	visao.mensagem_estatistica();
+	visao.mensagem_linha_divisoria();
 	visao.mensagem_faturamento_total_supermercado(faturamento_total_supermercado);
 
 	visao.mensagem_informacoes_caixas();
@@ -97,11 +97,14 @@ int main(int argc, char* argv[]) {
 		// Clientes atendidos
 		visao.mensagem_numero_clientes_atendidos(caixa->clientes_atendidos());
 
-		// Faturamento real de cada caixa
+		// Faturamento total do caixa
+		visao.mensagem_faturamento_total_caixa(caixa->faturamento_total());
+
+		// Faturamento médio de cada caixa
 		visao.mensagem_faturamento_medio_caixa(caixa->faturamento_medio());
 
 		// Lucro por caixa, descontando-se o salario deste caixa
-		//visao.mensagem_lucro_por_caixa(caixa->) // Terminar <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		visao.mensagem_lucro_por_caixa(caixa->lucro_caixa(tempo_simulacao));
 
 		// Tempo médio de permanência de um cliente na fila
 		visao.mensagem_tempo_medio_permanencia_fila(caixa->tempo_espera_medio());
