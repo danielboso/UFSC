@@ -146,6 +146,9 @@ public:
 	//! Função mensagem_informacoes_caixas
 	void mensagem_informacoes_caixas();
 
+	//! Função mensagem_estatistica
+	void mensagem_estatistica();
+
 	//! Função mensagem_linha_divisoria
 	void mensagem_linha_divisoria();
 
@@ -166,9 +169,15 @@ public:
 
 	//! Função entrada_tamanho_maximo_fila
 	/*!
-	 *	\return unsigned	
+	 *	\return unsigned
 	 */
 	unsigned entrada_tamanho_maximo_fila();
+
+	//! Função mensagem_faturamento_total_caixa
+	/*!
+	 *	\param double faturamento_total
+	 */
+	void mensagem_faturamento_total_caixa(double);
 };
 
 } /* namespace supermercado */
