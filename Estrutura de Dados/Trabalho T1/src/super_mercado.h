@@ -38,6 +38,15 @@ class SuperMercado {
 	 */
 	void adiciona_caixa(std::string, unsigned, unsigned);
 
+  //! Função adiciona_caixa
+  /*!
+   *  \param string   identificador
+   *  \param unsigned eficiencia
+   *  \param unsigned salario
+   *  \param unsigned tempo_chegada
+   */
+  void adiciona_caixa(std::string, unsigned, unsigned, unsigned);
+
   //! Função caixas
   /*!
    *  \return CircularList<Caixa*>
