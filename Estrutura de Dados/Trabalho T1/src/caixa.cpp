@@ -5,6 +5,7 @@
  */
 
 #include "caixa.h"
+#include <iostream>
 
 namespace supermercado {
 
@@ -147,8 +148,8 @@ const unsigned Caixa::tempo_espera_medio() const { return tempo_espera_medio_; }
  *	\return um const double.
  */
 const double Caixa::lucro_caixa(unsigned tempo_simulacao) {
-	unsigned tempo_hora = (extra_tempo_chegada_ - tempo_simulacao) / 3600;
-	return faturamento_total_ - (salario_ - tempo_hora);
+	float tempo_hora = ((float)(tempo_simulacao*3600) - (float)extra_tempo_chegada_) / 3600;
+	return faturamento_total_ - (salario_ * tempo_hora);
 }
 
 //! Função membro processa_compras.
