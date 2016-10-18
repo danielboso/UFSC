@@ -55,8 +55,8 @@ void Controle::ler_arquivo() {
 				arquivo >> eficiencia;
 				arquivo >> salario;
 				mercado.adiciona_caixa(identificador, eficiencia, salario);
-				/*
 				++i;
+        /*
 				std::cout << "\nidentificador: " << identificador <<
 		            "\neficiencia: " << eficiencia <<
 		            "\nsalario: " << salario << std::endl;
