@@ -225,7 +225,7 @@ unsigned Visao::entrada_salario_caixa() {
  * 	supermercado. Faturamento do supermercado recebido por parâmetro.
  */
 void Visao::mensagem_faturamento_total_supermercado(int faturamento) {
-	std::cout << "\nFaturamento total do supermercado: " << faturamento << "\n";
+	std::cout << "Faturamento total do supermercado: " << faturamento << "\n";
 }
 
 //! Mensagem para usuário
@@ -252,7 +252,7 @@ void Visao::mensagem_faturamento_real_cada_caixa(int faturamento_real) {
  *	do caixa é recebido por parâmetro.
  */
 void Visao::mensagem_lucro_por_caixa(int lucro_caixa) {
-	std::cout << "\tLucro do caixa: " << lucro_caixa;
+	std::cout << "\tLucro do caixa: " << lucro_caixa << "\n";
 }
 
 //! Mensagem para usuário
@@ -406,12 +406,17 @@ unsigned Visao::entrada_tempo_medio_chegada() {
 
 //! Mensagem para usuário
 /*!
- *	Divisória com pontos para a estatística e para que as informações dos caixas
- * 	possam ficar mais visíveis.
+ *	Título da estatística
+ */
+ void Visao::mensagem_estatistica() {
+	 std::cout << "\n\n\t\tEstatísticas\n";
+ }
+
+//! Mensagem para usuário
+/*!
  * 	Informa-se que informações do caixa vem logo em seguida
  */
 void Visao::mensagem_informacoes_caixas() {
-	std::cout << "--------------------------------------------\n";
 	std::cout << "Informações sobre os caixas:\n";
 }
 
@@ -421,7 +426,7 @@ void Visao::mensagem_informacoes_caixas() {
  *	mais visíveis ao usuário.
  */
 void Visao::mensagem_linha_divisoria() {
-	std::cout << "--------------------------------------------\n";
+	std::cout << "-----------------------------------------------\n";
 }
 
 //! Mensagem para usuário
@@ -479,6 +484,10 @@ unsigned Visao::entrada_tamanho_maximo_fila() {
 		}
 	}
 	return tamanho_maximo;
+}
+
+void Visao::mensagem_faturamento_total_caixa(double faturamento_total) {
+	std::cout << "\tFaturamento total do caixa: " << faturamento_total << "\n";
 }
 
 } /* namespace supermercado */
