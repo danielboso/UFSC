@@ -1,3 +1,4 @@
+:- consult('linguagens.pl').
 
 %   	Linguagens L que possuem algum predecessor.
 lingcompre(L) :- predecessora(L, _).
@@ -65,9 +66,11 @@ lingmaisrecente_aux([H|T], A1, _ , L) :- linguagem(H, A2), A1 =< A2, !, lingmais
 lingmaisrecente(L) :- findall(L1, linguagem(L1, _), Lista), lingmaisrecente_aux(Lista, 0, _, L).
 
 %   	Linguagem L com mais predecessoras.
-predecessoras_aux([]   , Predecessora) :- \+predecessoras(Predecessora, _).
-predecessoras_aux([H|T], Predecessora) :- predecessora(Predecessora, H), predecessoras_aux(H, T).
-cadeia_predecessoras([H|T], H) :- predecessoras_aux(H, T).
+lingcommaispre_aux([]   , _  , L, L).
+lingcommaispre_aux([H|T], Q1, L1, L) :-	qsaopre(H, Q2), Q1 >= Q2, !, lingcommaispre_aux(T, Q1, L1, L).
+lingcommaispre_aux([H|T], Q1, _ , L) :-	qsaopre(H, Q2),	Q1 =< Q2, !, lingcommaispre_aux(T, Q2, H , L).
+
+lingcommaispre(L) :- findall(L1, linguagem(L1, _), Lista), lingcommaispre_aux(Lista, 0, _, L).
 
 %   	Linguagem L que é predecessora da maior quantidade de linguagens.
 
