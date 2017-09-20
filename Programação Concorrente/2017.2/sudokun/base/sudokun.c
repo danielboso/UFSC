@@ -42,7 +42,7 @@ bool verify_row(char* grid, int row) {
 	return true;
 }
 
-int verify_column(char* grid, int column) {
+bool verify_column(char* grid, int column) {
 	int i;
 	int begin_column = column;
 	int   end_column = MAX_n * column;
