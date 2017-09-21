@@ -73,9 +73,28 @@ lingcommaispre_aux([H|T], Q1, _ , L) :-	qsaopre(H, Q2),	Q1 =< Q2, !, lingcommais
 lingcommaispre(L) :- findall(L1, linguagem(L1, _), Lista), lingcommaispre_aux(Lista, 0, _, L).
 
 %   	Linguagem L que é predecessora da maior quantidade de linguagens.
+qsaosus(L, N)   :- findall(L, predecessora(_, L), Lista), length(Lista, N).
+
+linginfluente_aux([]   , _  , L, L).
+linginfluente_aux([H|T], Q1, L1, L) :-	qsaosus(H, Q2), Q1 >= Q2 , linginfluente_aux(T, Q1, L1, L).
+linginfluente_aux([H|T], Q1, _ , L) :-	qsaosus(H, Q2),	Q1 =< Q2 , linginfluente_aux(T, Q2, H , L).
+
+linginfluente(L) :- findall(L1, linguagem(L1, _), Lista), linginfluente_aux(Lista, 0, _, L).
 
 %   	Ano A em que houve desenvolvimento da maior quantidade de linguagens.
+linganocriativo_aux([]   , _  , A, L).
+linganocriativo_aux([H|T], Q1, A1, L) :-	qano(H, Q2), Q1 >= Q2 , !, linganocriativo_aux(T, Q1, A1, L).
+linganocriativo_aux([H|T], Q1, _ , L) :-	qano(H, Q2), Q1 =< Q2 , !, linganocriativo_aux(T, Q2, H , L).
+
+linganocriativo(A) :- findall(L1, linguagem(_, L1), Lista), linganocriativo_aux(Lista, 0, _, A).
 
 %   	Década D em que houve desenvolvimento da maior quantidade de linguagens.
+lingdecadacriativa_aux([]   , _  , D, D).
+lingdecadacriativa_aux([H|T], Q1, D1, L) :-	qdecada(H, Q2), Q1 >= Q2, !, lingdecadacriativa_aux(T, Q1, D1, L).
+lingdecadacriativa_aux([H|T], Q1, _ , L) :-	qdecada(H, Q2), Q1 =< Q2, !, lingdecadacriativa_aux(T, Q2, H , L).
+
+lingdecadacriativa(A) :- findall(L1, linguagem(_, L1), Lista), lingdecadacriativa_aux(Lista, 0, _, A).
 
 %   	Encadeamento de predecessoras (lista Lp) a partir de uma linguagem L.
+linglistapre(L, Lp).
+linglistapre(L , Lp) :- predecessora(P, L), linglistapre(P, [Lp|P]).
