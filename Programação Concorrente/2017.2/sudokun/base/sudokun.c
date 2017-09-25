@@ -302,6 +302,13 @@ int solve(uint8_t buffer[]) {
 	// se for invalido e for o ultimo da backtrack
 }*/
 
-/*bool valid() {
+int verify_row() {}
 
-}*/
+int verify_column() {}
+
+int verify_grid() {}
+
+
+bool valid() {
+
+}
