@@ -19,11 +19,11 @@ int solve();
 
 //void *thread_solve();
 
-int verify_row() {}
+int verify_row();
 
-int verify_column() {}
+int verify_column();
 
-int verify_grid() {}
+int verify_grid();
 
 //bool valid();
 
