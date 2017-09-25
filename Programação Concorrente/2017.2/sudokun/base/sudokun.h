@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-uint8_t *read_grid();
+int *read_grid();
 
-void print_grid(uint8_t buffer[]);
+void print_grid(int buffer[]);
 
 void generate_matrix();
 
@@ -15,16 +15,16 @@ int update(int value, int option);
 
 void insert_clues(uint8_t buffer[]);
 
-void solve();
+int solve();
 
-//void *thread_solve()
+//void *thread_solve();
 
-int verify_row(int position_cell);
+int verify_row() {}
 
-int verify_column(int position_cell);
+int verify_column() {}
 
-int verify_grid(int position_cell);
+int verify_grid() {}
 
-int valid();
+//bool valid();
 
 #endif
