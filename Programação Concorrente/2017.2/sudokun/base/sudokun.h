@@ -19,6 +19,12 @@ void solve();
 
 //void *thread_solve()
 
-//bool valid();
+int verify_row(int position_cell);
+
+int verify_column(int position_cell);
+
+int verify_grid(int position_cell);
+
+int valid();
 
 #endif

@@ -86,13 +86,13 @@ void generate_matrix() {
 		for (j = 0; j < size_squared; ++j) {      // Para cada coluna
 			for (k = 0; k < size_squared; ++k) {    // Para cada numero possivel
 				printf("Linha: %03u -", row);
-				constraint_matrix[row][0] = size_squared * i + j;                                          // celula
-				constraint_matrix[row][1] = size_squared * (i/size*size + j/size) + k + board_size;   // caixa
-				constraint_matrix[row][2] = size_squared * i + k + (board_size * 2);                       // linha
-				constraint_matrix[row][3] = size_squared * j + k + (board_size * 3);                       // coluna
-				printf(" %03u", constraint_matrix[row][0]);
-				printf(" %03u", constraint_matrix[row][1]);
-				printf(" %03u", constraint_matrix[row][2]);
+				constraint_matrix[row][0] = size_squared * i + j;                                  	// celula
+				constraint_matrix[row][1] = size_squared * (i/size*size + j/size) + k + board_size; // caixa
+				constraint_matrix[row][2] = size_squared * i + k + (board_size * 2);                // linha
+				constraint_matrix[row][3] = size_squared * j + k + (board_size * 3);                // coluna
+				printf(" %03u",   constraint_matrix[row][0]);
+				printf(" %03u",   constraint_matrix[row][1]);
+				printf(" %03u",   constraint_matrix[row][2]);
 				printf(" %03u\n", constraint_matrix[row][3]);
 				++row;
 			}
@@ -210,8 +210,6 @@ void solve(uint8_t buffer[]) {
 
 	insert_clues(buffer);
 
-
-
 	int i = 0;
 	while(1) {
 		while (i < board_size - clues) {
@@ -233,6 +231,20 @@ void solve(uint8_t buffer[]) {
 	// se for invalido e for o ultimo da backtrack
 }*/
 
-/*bool valid() {
+int verify_row(int position_cell) {
 
-}*/
+}
+
+int verify_column(int position_cell) {
+
+}
+
+int verify_grid(int position_cell) {
+
+}
+
+int valid(int position_cell) {
+
+
+
+}
