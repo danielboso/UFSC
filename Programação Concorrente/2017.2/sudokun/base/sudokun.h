@@ -17,14 +17,4 @@ void insert_clues(uint8_t buffer[]);
 
 int solve();
 
-//void *thread_solve();
-
-int verify_row();
-
-int verify_column();
-
-int verify_grid();
-
-//bool valid();
-
 #endif
