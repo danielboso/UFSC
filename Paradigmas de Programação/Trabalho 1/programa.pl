@@ -96,5 +96,6 @@ lingdecadacriativa_aux([H|T], Q1, _ , L) :-	qdecada(H, Q2), Q1 =< Q2, !, lingdec
 lingdecadacriativa(A) :- findall(L1, linguagem(_, L1), Lista), lingdecadacriativa_aux(Lista, 0, _, A).
 
 %   	Encadeamento de predecessoras (lista Lp) a partir de uma linguagem L.
-linglistapre(L, Lp).
-linglistapre(L , Lp) :- predecessora(P, L), linglistapre(P, [Lp|P]).
+linglistapre_aux(L, Aux, Lp) :- \+predecessora(L, _), !, flatten(Aux, Lp).
+linglistapre_aux(L, Aux, Lp) :- predecessora(L, P), linglistapre_aux(P, [Aux|[P]], Lp).
+linglistapre(L , Lp) :- linglistapre_aux(L, [], Lp).
