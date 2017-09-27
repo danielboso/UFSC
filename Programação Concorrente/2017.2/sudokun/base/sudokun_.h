@@ -1,12 +1,24 @@
 #ifndef SUDOKUN_H_
 #define SUDOKUN_H_
 
-int check_row(int buf[], int row);
+#include <stdint.h>
 
-int check_column(int buf[], int column);
+int *read_grid();
 
-int check_region(int buf[]);
+void print_grid(int buffer[]);
 
-void print_grid(int buf[], int size);
+void generate_matrix();
+
+void destroy_matrix();
+
+int update(int value, int option);
+
+void insert_clues(int buffer[]);
+
+int solve();
+
+//void *thread_solve()
+
+//bool valid();
 
 #endif
