@@ -17,8 +17,6 @@ void insert_clues(int buffer[]);
 
 int solve();
 
-//void *thread_solve()
-
-//bool valid();
+void *Thread_solve(void *arg);
 
 #endif
