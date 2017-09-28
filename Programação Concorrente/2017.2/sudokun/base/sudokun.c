@@ -38,6 +38,8 @@ int reference_row;
 
 int vector_size;
 
+int portion;
+
 int *current_column;
 
 int main (int argc, char **argv) {
@@ -54,6 +56,10 @@ int main (int argc, char **argv) {
 	size_squared = size * size;
 	board_size = size_squared * size_squared;
 	vector_size = board_size * 4;
+
+	portion = vector_size / num_threads;
+
+	printf("Portion: %02d\n", portion);
 
 	int *buffer;
 
@@ -251,17 +257,21 @@ int solve(int buffer[]) {
 				least_choices = remaining_choices[cand];
 
 				if (least_choices > 1) {
-					unsigned portion = vector_size / num_threads;
+					printf("AQUI1\n");
+					int k;
+					for (k = 0; k < num_threads; ++k) {
+						printf("AQUI666\n");
+					    vector_range[k].initial_range = k * portion;
+					    vector_range[k].final_range = vector_range[k].initial_range + portion;
 
-					for (int k = 0; k != num_threads; ++k) {
-				      vector_range[k].initial_range = k * portion;
-				      vector_range[k].final_range = vector_range[k].initial_range + portion;
-				      if (k == (num_threads - 1)) vector_range[k].final_range = vector_size;
-				      pthread_create(&thread[i],	NULL,	Thread_solve,	&vector_range[k]);
+					    if (k == (num_threads - 1)) vector_range[k].final_range = vector_size;
+
+					    pthread_create(&thread[i],	NULL,	Thread_solve,	&vector_range[k]);
 				    }
-				    for (int k = 0; k != num_threads; ++k) {
-				      pthread_join(thread[i],	NULL);
+				    for (k = 0; k != num_threads; ++k) {
+				    	pthread_join(thread[i],	NULL);
 				    }
+					printf("AQUI2\n");
 					// for (c = 0; c < board_size * 4; ++c) { // para cada uma das restrições
 					// 	if (remaining_choices[c] < least_choices) { // se a restrição for menor que least_choices, pego ela pois é a facil de resolver
 					// 		least_choices = remaining_choices[c];
@@ -308,9 +318,11 @@ int solve(int buffer[]) {
 }
 
 void *Thread_solve(void *arg) {
+	printf("AQUI5\n");
 	struct Range vector_r = *(struct Range*)arg;
 
 	int least_choices_temp = least_choices;
+
 	int i;
 	for (i = vector_r.initial_range; i < vector_r.final_range; ++i) { // para cada uma das restrições
 		if (remaining_choices[i] < least_choices) { // se a restrição for menor que least_choices, pego ela pois é a facil de resolver
@@ -320,9 +332,10 @@ void *Thread_solve(void *arg) {
 				break;
 			}
 		}
-	}
+	}printf("AQUI4\n");
 	pthread_mutex_lock(&mutex);
-	if (remaining_choices[i] < least_choices) {
+	printf("AQUI3\n");
+	if (least_choices_temp < least_choices) {
 		least_choices = least_choices_temp;
 		reference_row = i;
 	}
