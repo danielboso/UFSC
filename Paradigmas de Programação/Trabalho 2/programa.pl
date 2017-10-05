@@ -93,7 +93,18 @@ searchId(Id,L) :-
 
 % Questao 2
 % Monta lista <L> com pontos iniciais de cada <Id>
-searchFirst(L) :- findall().
+firstElement([H|F], H).
+searchFirst_aux(Aux, Aux, Id) :-
+	\+searchId(Id, _),
+	!.
+
+searchFirst_aux(L, Aux, Id) :-
+	Id_novo is Id +1,
+	searchId(Id, Lista),
+	firstElement(Lista, F),
+	append(Aux, [F], Lista_nova),
+	searchFirst_aux(L, Lista_nova, Id_novo).
+searchFirst(L) :- searchFirst_aux(L, [], 1).
 
 % Questao 3
 % Monta lista <L> com pontos ou deslocamentos finais de cada <Id>
