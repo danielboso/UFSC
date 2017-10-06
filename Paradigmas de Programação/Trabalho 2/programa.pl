@@ -108,10 +108,29 @@ searchFirst(L) :- searchFirst_aux(L, [], 1).
 
 % Questao 3
 % Monta lista <L> com pontos ou deslocamentos finais de cada <Id>
-searchLast(L) :- true.
+lastElement([E|[]], E).
+lastElement([H|T] , E):- lastElement(T, E).
+
+searchLast_aux(Aux, Aux, Id) :-
+	\+searchId(Id, _).
+
+searchLast_aux(L, Aux, Id) :-
+	searchId(Id, Lista),
+	Id_novo is Id +1,
+	lastElement(Lista, F),
+	append(Aux, [F], Lista_nova),
+	searchLast_aux(L, Lista_nova, Id_novo).
+searchLast(L) :- searchLast_aux(L, [], 1).
 
 % Questao 4
 % Remove todos os pontos ou deslocamentos do ultimo <Id>
+lastId_aux(Aux, Id) :-
+	\+searchId(Aux, _), !, Id is Aux-1.
+lastId_aux(Aux, Id) :-
+	Id_novo is Aux + 1,
+	lastId_aux(Id_novo, Id).
+lastId(Id) :-
+	lastId_aux(1, Id).
 removeLast :- true.
 
 % Questao 5
