@@ -108,11 +108,11 @@ searchFirst(L) :- searchFirst_aux(L, [], 1).
 
 % Questao 3
 % Monta lista <L> com pontos ou deslocamentos finais de cada <Id>
-lastElement([E|[]], E).
+lastElement([E|[]], E):- !.
 lastElement([H|T] , E):- lastElement(T, E).
 
 searchLast_aux(Aux, Aux, Id) :-
-	\+searchId(Id, _).
+	\+searchId(Id, _), !.
 
 searchLast_aux(L, Aux, Id) :-
 	searchId(Id, Lista),
@@ -131,15 +131,40 @@ lastId_aux(Aux, Id) :-
 	lastId_aux(Id_novo, Id).
 lastId(Id) :-
 	lastId_aux(1, Id).
-removeLast :- true.
+
+removePointsLastId([H|[]]) :-
+	[Id,X,Y] = H,
+	!,
+	retract(xy(Id,X,Y)).
+
+
+removePointsLastId([H|T]) :-
+	[Id,X,Y] = H,
+	retract(xy(Id,X,Y)),
+	!,
+	removePointsLastId(T).
+
+removeLast() :-
+	lastId(Id),
+	bagof([Id, X,Y], xy(Id,X,Y), L),
+	!,
+	removePointsLastId(L).
 
 % Questao 5
 % Remove o ultimo ponto ou deslocamento de <Id>
 removeLast(Id) :- true.
 
 % Questao 6
-% Determina um novo <Id> na sequencia numerica existente
-newId(Id) :- true.
+% De	termina um novo <Id> na sequencia numerica existente
+newId_aux(Aux, Id) :-
+	\+searchId(Aux, _), !, Id is Aux.
+
+newId_aux(Aux, Id) :-
+	Id_novo is Aux + 1,
+	newId_aux(Id_novo, Id).
+
+newId(Id) :-
+	newId_aux(1, Id).
 
 % Questao 7
 % Duplica a figura com <Id> a partir de um nova posicao (X,Y)
