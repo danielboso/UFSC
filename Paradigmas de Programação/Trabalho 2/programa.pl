@@ -196,4 +196,5 @@ cloneId(Id,X,Y) :-
 	Y_clone is (Y + Y_e),
 	assert(xy(Id_novo, X_clone, Y_clone)),
 	removeFirstElement(Lista, Lista_nova),
-	cloneId_aux(Id_novo, Lista_nova) ,!.
+	cloneId_aux(Id_novo, Lista_nova),
+	!.
