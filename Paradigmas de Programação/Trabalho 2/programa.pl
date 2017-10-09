@@ -152,7 +152,16 @@ removeLast() :-
 
 % Questao 5
 % Remove o ultimo ponto ou deslocamento de <Id>
-removeLast(Id) :- true.
+removeLast_aux([H|[]]) :-
+	[Id,X,Y] = H,
+	retract(xy(Id,X,Y)),
+	!.
+
+removeLast_aux([H|T]) :-
+	removeLast_aux(T).
+removeLast(Id) :-
+	bagof([Id, X,Y], xy(Id,X,Y), L),
+	removeLast_aux(L).
 
 % Questao 6
 % De	termina um novo <Id> na sequencia numerica existente
@@ -169,4 +178,22 @@ newId(Id) :-
 % Questao 7
 % Duplica a figura com <Id> a partir de um nova posicao (X,Y)
 % Deve ser criado um <Id_novo> conforme a sequencia (questao 6)
-cloneId(Id,X,Y) :- true.
+removeFirstElement([H|T], T).
+
+cloneId_aux(Id, []).
+
+cloneId_aux(Id, [H|T]) :-
+	[X_e, Y_e] = H,
+	assert(xy(Id, X_e, Y_e)),
+	cloneId_aux(Id, T),!.
+
+cloneId(Id,X,Y) :-
+	newId(Id_novo),
+	searchId(Id, Lista),
+	firstElement(Lista, Elemento),
+	[X_e, Y_e] = Elemento,
+	X_clone is (X + X_e),
+	Y_clone is (Y + Y_e),
+	assert(xy(Id_novo, X_clone, Y_clone)),
+	removeFirstElement(Lista, Lista_nova),
+	cloneId_aux(Id_novo, Lista_nova) ,!.
