@@ -7,14 +7,14 @@
      Ultima atualizacao : 12set2017
 
    RECOMENDACOES:
-   
+
    - O nome deste arquivo deve ser 'programa.pl'
    - O nome do banco de dados deve ser 'desenhos.pl'
    - O nome do arquivo de gramatica deve ser 'gramatica.pl'
-   
-   - Dicas de uso podem ser obtidas na execucação: 
+
+   - Dicas de uso podem ser obtidas na execucação:
      ?- menu.
-     
+
    - Exemplo de uso:
      ?- load.
      ?- searchAll(1).
@@ -23,11 +23,11 @@
      ?- comando([pf, '10'], []).
      Ou simplesmente:
      ?- cmd("pf 10").
-   
+
      ?- comando([repita, '5', '[', pf, '50', gd, '45', ']'], []).
      Ou simplesmente:
      ?- cmd("repita 5[pf 50 gd 45]").
-     
+
    - Colocar o nome e matricula de cada integrante do grupo
      nestes comentarios iniciais do programa
 */
@@ -119,30 +119,124 @@ tartaruga :-
 
 % Questao 2
 % Para frente N passos (conforme angulo atual)
+
+marcainicio :-
+	xylast(Id, X_l, Y_l),
+	findall(Id, xy(Id, _, _), Lista),
+	length(Lista, N),
+	N = 0,
+	new(Id, X_l, Y_l), !.
+
+marcainicio.
+
 parafrente(N) :-
-    true.
+	active(Active),
+	Active is 1,
+	marcainicio,
+	angle(A),
+	Alfa is A*pi/180,
+	X is N * cos(Alfa),
+	Y is -1 *  N * sin(Alfa),
+	xylast(Id, X_l, Y_l),
+	X_last is X_l + X,
+	Y_last is Y_l + Y,
+	retractall(xylast(_, _, _)),
+	assert(xylast(Id, X_last, Y_last)),
+	new(Id, X, Y),
+	!.
+
+parafrente(N) :-
+	active(Active),
+	Active is 0,
+	marcainicio,
+	angle(A),
+	Alfa is A*pi/180,
+	X is N * cos(Alfa),
+	Y is -1 *  N * sin(Alfa),
+	xylast(Id, X_l, Y_l),
+	X_last is X_l + X,
+	Y_last is Y_l + Y,
+	retractall(xylast(_, _, _)),
+	assert(xylast(Id, X_last, Y_last)),
+	!.
 
 % Questao 3
 % Para tras N passos (conforme angulo atual)
-paratras(N) :- 
-    true.
+paratras(N) :-
+	active(Active),
+	Active is 1,
+	marcainicio,
+	angle(A),
+	Alfa is A*pi/180,
+    X is -1* N * cos(Alfa),
+	Y is N * sin(Alfa),
+	xylast(Id, X_l, Y_l),
+	X_last is X_l - X,
+	Y_last is Y_l + Y,
+	retractall(xylast(_, _, _)),
+	assert(xylast(Id, X_last, Y_last)),
+	new(Id, X, Y),
+	!.
+
+paratras(N) :-
+	active(Active),
+	Active is 0,
+	marcainicio,
+	angle(A),
+	Alfa is A*pi/180,
+    X is N * cos(Alfa),
+	Y is N * sin(Alfa),
+	xylast(Id, X_l, Y_l),
+	X_last is X_l - X,
+	Y_last is Y_l + Y,
+	retractall(xylast(_, _, _)),
+	assert(xylast(Id, X_last, Y_last)),
+	!.
 
 % Questao 4
 % Gira a direita G graus
-giradireita(G) :- 
-    true.
+giradireita(G) :-
+	angle(A),
+	Novo_angulo is A - G,
+	retractall(angle(_)),
+	assert(angle(Novo_angulo)),
+	!.
 
 % Questao 5
 % Gira a esquerda G graus
-giraesquerda(G) :- 
-    true.
+giraesquerda(G) :-
+	angle(A),
+	Novo_angulo is A + G,
+	retractall(angle(_)),
+	assert(angle(Novo_angulo)),
+	!.
 
 % Questao 6
 % Use nada (levanta lapis)
-usenada :- 
-    true.
+usenada :-
+	write(usenada), nl,
+	retractall(active(_)),
+	assert(active(0)).
 
 % Questao 7
 % Use lapis
-uselapis :- 
-    true.
+uselapis :-
+	write(uselapis), nl,
+	retractall(active(_)),
+	xylast(Id, X_l, Y_l),
+	write(velhoId = Id), nl,
+	NovoId is Id + 1,
+	write(novoId = NovoId), nl,
+	retractall(xylast(_, _, _)),
+	assert(xylast(NovoId, X_l, Y_l)),
+	assert(active(1)).
+
+testes :-
+	cmd("pf 54 ge 37 pt 28 gd 95 pf 54 ge 37 pt 28 gd 95 pf 54 ge 37 pt 28 gd 95 pf 54 ge 37 pt 28 gd 95 pf 54 ge 37 pt 28 gd 95 pf 54 ge 37 pt 28 gd 95"), %estrela de seis pontas
+	cmd("un pt 200 ge 90 pf 200 ul"),
+	cmd("repita 36 [ gd 150 repita 8 [ pf 50 ge 45 ] ]"), %flor grande
+	cmd("un pt 400 ul"),
+	cmd("repita 72 [ ge 10 pf 5 ]"), %circunferencia
+	cmd("un pt 150 ul"),
+	cmd("repita 12 [ pf 100 gd 150 ]"), % estrela ‘a direita
+	svg.
