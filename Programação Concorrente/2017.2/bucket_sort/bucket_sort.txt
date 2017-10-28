@@ -1,0 +1,26 @@
+
+Entrada:
+	- Tamanho do vetor (tamvet) a ser ordenado
+	- Número de buckets (nbuckets)
+	- Número de processos MPI (nprocs)
+	- Flag indicando se o programa deve imprimir o vetor original no início da
+execução e o vetor ordenado no final da execução
+			0 : para não imprimir
+			1 : para imprimir os vetores
+
+Observações:
+	- Faixa de valores possíveis no vetor de entrada será sempre [0; tamvet-1].
+	- Faixa de números permitidos em cada bucket deverão ser determinadas durante
+a execução do programa em função do tamanho do vetor de entrada (tamvet) e do
+número de bucket (nbuckets).
+	- Sempre que possível, as faixas de números permitidos em cada bucket deverão
+ter o mesmo tamanho.
+	- Nos casos onde a divisão não é inteira, as faixas dos números permitidos em
+cada bucket deverão ter uma diferença de tamanho de no máximo 1. Exemplo: Para
+tamvet = 20 e nbuckets = 8, teríamos 20/8 = 2 com resto igual a 4. Nesse caso,
+4 buckets teriam intervalos de 3 elementos e 4 buckets teriam intervalos de 2
+elementos.
+	- Programa deve funcionar em todos os casos, independentemente do tamanho do
+vetor, número de buckets ou processos MPI, exceto quando o número de buckets escolhido
+for maior do que o tamanho do vetor. Nesse caso, o programa derá informar um erro
+ao usuário.
