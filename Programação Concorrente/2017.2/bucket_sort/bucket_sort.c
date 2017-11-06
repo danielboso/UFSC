@@ -63,6 +63,7 @@ int main(int argc, char** argv) {
 	// ------ teste ------------------------------------------------------------
 
 	Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
+	inicialize_buckets(buckets);
 
 	for(i = 0; i < tamvet; i++) {
 		int index = getIndexBucket(vector[i]);
@@ -90,14 +91,31 @@ int main(int argc, char** argv) {
 		index += buckets[i].size;
 	}
 
+	// ------ teste ------------------------------------------------------------
+	for(i = 0; i < nbuckets; i++) {
+		printf("posicao %d: começa %d\n", i, index_bucket_in_tamvet[i]);
+	}
+	// ------ teste ------------------------------------------------------------
+
 	for(i = 0; i < nbuckets; i++) {
 		qsort(buckets[i].bucket, buckets[i].size, sizeof(int), cmpfunc);
 	}
 
 	// ------ teste ------------------------------------------------------------
+	//int j;
+	//for(i = 0; i < nbuckets; i++) {
+	//	for(j = 0; j < buckets[i].size; j++) {
+	//		printf("Bucket %d, elemento %d.\n", i, buckets[i].bucket[j]);
+	//	}
+	//}
+	// ------ teste ------------------------------------------------------------
+
+	// ------ teste ------------------------------------------------------------
 	int j;
 	for(i = 0; i < nbuckets; i++) {
-		int index_bucket = index_bucket_in_tamvet[buckets[i].index];
+		int index_bucket = index_bucket_in_tamvet[buckets[i].id];
+		printf("bucket_id do bucket[%d]%d\n", buckets[i].id, i);
+		printf("index_bucket %d do bucket %d\n", index_bucket, i);
 		for(j = 0; j < buckets[i].size; j++) {
 			vector[index_bucket] = buckets[i].bucket[j];
 			index_bucket++;
@@ -142,9 +160,8 @@ void inicialize_buckets(Bucket * buckets) {
 	if(remaining_elements == 0) {
 	  	int i;
 	  	for(i = 0; i < nbuckets; i++) {
-			//buckets[i].index = i;
-			buckets[i].bucket = malloc(sizeof(int));
-			buckets[i].size = 0;
+			buckets[i].id = i;
+			//buckets[i].bucket = malloc(sizeof(int));
 			buckets[i].begin_range = begin;
 			buckets[i].end_range = begin + interval_numbers_bucket;
 			begin += interval_numbers_bucket;
@@ -153,16 +170,14 @@ void inicialize_buckets(Bucket * buckets) {
 	} else {
 	  	int i;
 	  	for(i = 0; i < nbuckets; i++) {
-			//buckets[i].index = i;
-			buckets[i].bucket = malloc(sizeof(int));
-			buckets[i].size = 0;
+			buckets[i].id = i;
+			//buckets[i].bucket = malloc(sizeof(int));
 			if((nprocs - remaining_elements-1) < i) {
 		  		buckets[i].begin_range = begin;
 		  		buckets[i].end_range = begin + interval_numbers_bucket+1;
 		  		begin += interval_numbers_bucket+1;
 
 			} else {
-
 		  		buckets[i].begin_range = begin;
 		  		buckets[i].end_range = begin + interval_numbers_bucket;
 		  		begin += interval_numbers_bucket;
