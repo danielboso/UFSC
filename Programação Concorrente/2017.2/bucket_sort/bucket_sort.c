@@ -74,9 +74,11 @@ int main(int argc, char** argv) {
 
 	for(i = 0; i < tamvet; i++) {
 		printf("i:%d\n", i);
-		int index = getIndexBucket(vector[i], bigger_number);
-		if(index >= nbuckets) {
-			index--;
+		int index;
+		if(index == nbuckets) {
+			index = getIndexBucket(vector[i], bigger_number) - 1;
+		} else {
+			index = getIndexBucket(vector[i], bigger_number);
 		}
 		printf("index %d\n", index);
 		//printf("1\n");
