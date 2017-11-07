@@ -53,47 +53,43 @@ int main(int argc, char** argv) {
 
 	Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
 	int bigger_number = vector[0];
-	// ------ teste ------------------------------------------------------------
+
 	for(i = 0; i < tamvet; i++) {
 		if(vector[i] > bigger_number) {
 			bigger_number = vector[i];
 		}
 	}
-	// ------ teste ------------------------------------------------------------
 
 	inicialize_buckets(buckets, bigger_number);
 
-	for(i = 0; i < nbuckets; i++) {
-		printf("--------------------------------------------------------------\n");
-		printf("Bucket Id:			%d\n", buckets[i].id);
-		printf("Bucket Size: 		%d\n", buckets[i].size);
-		printf("Bucket Begin Range:	%d\n", buckets[i].begin_range);
-		printf("Bucket End Range 	%d\n", buckets[i].end_range);
-		printf("--------------------------------------------------------------\n");
-	}
+	// ------ teste ------------------------------------------------------------
+	//for(i = 0; i < nbuckets; i++) {
+	//	printf("--------------------------------------------------------------\n");
+	//	printf("Bucket Id:			%d\n", buckets[i].id);
+	//	printf("Bucket Size: 		%d\n", buckets[i].size);
+	//	printf("Bucket Begin Range:	%d\n", buckets[i].begin_range);
+	//	printf("Bucket End Range 	%d\n", buckets[i].end_range);
+	//	printf("--------------------------------------------------------------\n");
+	//}
+	// ------ teste ------------------------------------------------------------
 
 	for(i = 0; i < tamvet; i++) {
-		printf("i:%d\n", i);
-		int index;
-		if(index == nbuckets) {
-			index = getIndexBucket(vector[i], bigger_number) - 1;
-		} else {
-			index = getIndexBucket(vector[i], bigger_number);
+		int index =getIndexBucket(vector[i], bigger_number);
+		if (index >= nbuckets) {
+			index = nbuckets-1;
 		}
-		printf("index %d\n", index);
-		//printf("1\n");
-		int size_bucket = buckets[index].size;
-		//printf("2\n");
-		buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
 
-		//printf("3\n");
+		int size_bucket = buckets[index].size;
+		buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
 		buckets[index].bucket[size_bucket] = vector[i];
-		//printf("4\n");
+
+		// ------ teste ------------------------------------------------------------
 		printf("elemento %d entrou no bucket %d \n", vector[i], index);
 		printf("bucket %d -- elemento %d -- begin_range %d -- end_range %d \n", index, vector[i], buckets[index].begin_range, buckets[index].end_range);
-		//printf("5\n");
+		// ------ teste ------------------------------------------------------------
+
 		buckets[index].size++;
-		//printf("6\n");
+
 	}
 
 	// ------ teste ------------------------------------------------------------
