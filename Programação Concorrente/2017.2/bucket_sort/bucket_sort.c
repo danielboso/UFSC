@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <time.h>
 #include <stdio.h>
 #include "bucket_sort.h"
 
@@ -7,21 +8,6 @@ unsigned int tamvet;
 unsigned int nbuckets;
 unsigned int nprocs;
 int flag_print;
-
-void generateVector(int *vector, int tamvet) {
-	int i;
-	int j = tamvet-1;
-
-	for(i = 0; i < tamvet; i++) {
-		vector[i] = j;
-		j--;
-	}
-}
-
-int getIndexBucket(int value) {
-	float itens_bucket = (float)tamvet / (float)nbuckets;
-	return value/itens_bucket;
-}
 
 int main(int argc, char** argv) {
 
@@ -41,13 +27,16 @@ int main(int argc, char** argv) {
 	flag_print = atoi(argv[4]);
 
 	// ------ teste ------------------------------------------------------------
-	printf("tamvet %d\n", tamvet);
-	printf("nbuckets %d\n", nbuckets);
-	printf("nprocs %d\n", nprocs);
-	printf("flag_imprimir %d\n", flag_print);
+	//printf("tamvet %d\n", tamvet);
+	//printf("nbuckets %d\n", nbuckets);
+	//printf("nprocs %d\n", nprocs);
+	//printf("flag_imprimir %d\n", flag_print);
+	// ------ teste ------------------------------------------------------------
 
 	int *vector = malloc(sizeof(int)*tamvet);
 	generateVector(vector, tamvet);
+
+	//
 
 	int i;
 
@@ -63,16 +52,46 @@ int main(int argc, char** argv) {
 	// ------ teste ------------------------------------------------------------
 
 	Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
-	inicialize_buckets(buckets);
+	int bigger_number = vector[0];
+	// ------ teste ------------------------------------------------------------
+	for(i = 0; i < tamvet; i++) {
+		if(vector[i] > bigger_number) {
+			bigger_number = vector[i];
+		}
+	}
+	// ------ teste ------------------------------------------------------------
+
+	inicialize_buckets(buckets, bigger_number);
+
+	for(i = 0; i < nbuckets; i++) {
+		printf("--------------------------------------------------------------\n");
+		printf("Bucket Id:			%d\n", buckets[i].id);
+		printf("Bucket Size: 		%d\n", buckets[i].size);
+		printf("Bucket Begin Range:	%d\n", buckets[i].begin_range);
+		printf("Bucket End Range 	%d\n", buckets[i].end_range);
+		printf("--------------------------------------------------------------\n");
+	}
 
 	for(i = 0; i < tamvet; i++) {
-		int index = getIndexBucket(vector[i]);
+		printf("i:%d\n", i);
+		int index = getIndexBucket(vector[i], bigger_number);
+		if(index >= nbuckets) {
+			index--;
+		}
+		printf("index %d\n", index);
+		//printf("1\n");
 		int size_bucket = buckets[index].size;
+		//printf("2\n");
 		buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
 
+		//printf("3\n");
 		buckets[index].bucket[size_bucket] = vector[i];
-		//printf("elemento %d entrou no bucket %d \n", vector[i], index);
+		//printf("4\n");
+		printf("elemento %d entrou no bucket %d \n", vector[i], index);
+		printf("bucket %d -- elemento %d -- begin_range %d -- end_range %d \n", index, vector[i], buckets[index].begin_range, buckets[index].end_range);
+		//printf("5\n");
 		buckets[index].size++;
+		//printf("6\n");
 	}
 
 	// ------ teste ------------------------------------------------------------
@@ -92,9 +111,9 @@ int main(int argc, char** argv) {
 	}
 
 	// ------ teste ------------------------------------------------------------
-	for(i = 0; i < nbuckets; i++) {
-		printf("posicao %d: começa %d\n", i, index_bucket_in_tamvet[i]);
-	}
+	//for(i = 0; i < nbuckets; i++) {
+	//	printf("posicao %d: começa %d\n", i, index_bucket_in_tamvet[i]);
+	//}
 	// ------ teste ------------------------------------------------------------
 
 	for(i = 0; i < nbuckets; i++) {
@@ -114,9 +133,13 @@ int main(int argc, char** argv) {
 	int j;
 	for(i = 0; i < nbuckets; i++) {
 		int index_bucket = index_bucket_in_tamvet[buckets[i].id];
-		printf("bucket_id do bucket[%d]%d\n", buckets[i].id, i);
-		printf("index_bucket %d do bucket %d\n", index_bucket, i);
+		//printf("bucket_id do bucket[%d]%d\n", buckets[i].id, i);
+		//printf("index_bucket %d do bucket %d\n", index_bucket, i);
 		for(j = 0; j < buckets[i].size; j++) {
+			if(buckets[i].size == 0) {
+				printf("continue");
+				continue;
+			}
 			vector[index_bucket] = buckets[i].bucket[j];
 			index_bucket++;
 		}
@@ -146,22 +169,27 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-int cmpfunc (const void * a, const void * b) {
-   return ( *(int*)a - *(int*)b );
+void generateVector(int *vector, int tamvet) {
+	int i;
+	srand(time(NULL));
+	for(i = 0; i < tamvet; i++) {
+		vector[i] = rand() % 100;
+		printf("%d\n", vector[i]);
+	}
 }
 
-void inicialize_buckets(Bucket * buckets) {
+void inicialize_buckets(Bucket * buckets, int bigger_number) {
 	/* CRIAÇÃO DADOS DAS STRUCTS */
 
-	int interval_numbers_bucket = tamvet / nprocs;
-	int remaining_elements = tamvet % nprocs;
+	int interval_numbers_bucket = bigger_number / nbuckets;
+	printf("interval_numbers_bucket %d\n", interval_numbers_bucket);
+	int remaining_elements = bigger_number % nbuckets;
 
 	int begin = 0;
 	if(remaining_elements == 0) {
 	  	int i;
 	  	for(i = 0; i < nbuckets; i++) {
 			buckets[i].id = i;
-			//buckets[i].bucket = malloc(sizeof(int));
 			buckets[i].begin_range = begin;
 			buckets[i].end_range = begin + interval_numbers_bucket;
 			begin += interval_numbers_bucket;
@@ -171,8 +199,7 @@ void inicialize_buckets(Bucket * buckets) {
 	  	int i;
 	  	for(i = 0; i < nbuckets; i++) {
 			buckets[i].id = i;
-			//buckets[i].bucket = malloc(sizeof(int));
-			if((nprocs - remaining_elements-1) < i) {
+			if((nbuckets - remaining_elements-1) < i) {
 		  		buckets[i].begin_range = begin;
 		  		buckets[i].end_range = begin + interval_numbers_bucket+1;
 		  		begin += interval_numbers_bucket+1;
@@ -185,4 +212,13 @@ void inicialize_buckets(Bucket * buckets) {
 			}
 	  	}
 	}
+}
+
+int getIndexBucket(int value, int bigger_number) {
+	float itens_bucket = (float)bigger_number / (float)nbuckets;
+	return value/itens_bucket;
+}
+
+int cmpfunc (const void * a, const void * b) {
+   return ( *(int*)a - *(int*)b );
 }
