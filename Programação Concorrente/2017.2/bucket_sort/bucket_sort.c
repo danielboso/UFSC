@@ -59,17 +59,18 @@ int main(int argc, char** argv) {
 			bigger_number = vector[i];
 		}
 	}
+	printf("bigger_number: 	%d\n", bigger_number);
 
-	inicialize_buckets(buckets, bigger_number);
+	//inicialize_buckets(buckets, bigger_number);
 
 	// ------ teste ------------------------------------------------------------
 	//for(i = 0; i < nbuckets; i++) {
-	//	printf("--------------------------------------------------------------\n");
-	//	printf("Bucket Id:			%d\n", buckets[i].id);
+	//	printf("--------------------------\n");
+	//	printf("Bucket Id:		%d\n", buckets[i].id);
 	//	printf("Bucket Size: 		%d\n", buckets[i].size);
 	//	printf("Bucket Begin Range:	%d\n", buckets[i].begin_range);
 	//	printf("Bucket End Range 	%d\n", buckets[i].end_range);
-	//	printf("--------------------------------------------------------------\n");
+	//	printf("--------------------------\n");
 	//}
 	// ------ teste ------------------------------------------------------------
 
@@ -78,14 +79,16 @@ int main(int argc, char** argv) {
 		if (index >= nbuckets) {
 			index = nbuckets-1;
 		}
+		int value = vector[i];
+		//if()
 
 		int size_bucket = buckets[index].size;
 		buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
 		buckets[index].bucket[size_bucket] = vector[i];
 
 		// ------ teste ------------------------------------------------------------
-		printf("elemento %d entrou no bucket %d \n", vector[i], index);
-		printf("bucket %d -- elemento %d -- begin_range %d -- end_range %d \n", index, vector[i], buckets[index].begin_range, buckets[index].end_range);
+		//printf("elemento %d entrou no bucket %d \n", vector[i], index);
+		//printf("bucket %d -- elemento %d -- begin_range %d -- end_range %d \n", index, vector[i], buckets[index].begin_range, buckets[index].end_range);
 		// ------ teste ------------------------------------------------------------
 
 		buckets[index].size++;
@@ -106,6 +109,7 @@ int main(int argc, char** argv) {
 	for(i = 0; i < nbuckets; i++) {
 		index_bucket_in_tamvet[i] = index;
 		index += buckets[i].size;
+		buckets[i].id = i;
 	}
 
 	// ------ teste ------------------------------------------------------------
@@ -131,11 +135,8 @@ int main(int argc, char** argv) {
 	int j;
 	for(i = 0; i < nbuckets; i++) {
 		int index_bucket = index_bucket_in_tamvet[buckets[i].id];
-		//printf("bucket_id do bucket[%d]%d\n", buckets[i].id, i);
-		//printf("index_bucket %d do bucket %d\n", index_bucket, i);
 		for(j = 0; j < buckets[i].size; j++) {
 			if(buckets[i].size == 0) {
-				printf("continue");
 				continue;
 			}
 			vector[index_bucket] = buckets[i].bucket[j];
@@ -171,16 +172,14 @@ void generateVector(int *vector, int tamvet) {
 	int i;
 	srand(time(NULL));
 	for(i = 0; i < tamvet; i++) {
-		vector[i] = rand() % 100;
-		printf("%d\n", vector[i]);
+		vector[i] = rand() % tamvet;
+		//printf("%d\n", vector[i]);
 	}
 }
-
+/*
 void inicialize_buckets(Bucket * buckets, int bigger_number) {
-	/* CRIAÇÃO DADOS DAS STRUCTS */
-
 	int interval_numbers_bucket = bigger_number / nbuckets;
-	printf("interval_numbers_bucket %d\n", interval_numbers_bucket);
+	//printf("interval_numbers_bucket %d\n", interval_numbers_bucket);
 	int remaining_elements = bigger_number % nbuckets;
 
 	int begin = 0;
@@ -188,7 +187,11 @@ void inicialize_buckets(Bucket * buckets, int bigger_number) {
 	  	int i;
 	  	for(i = 0; i < nbuckets; i++) {
 			buckets[i].id = i;
-			buckets[i].begin_range = begin;
+			if(i == 0) {
+				buckets[i].begin_range = begin;
+			} else {
+				buckets[i].begin_range = begin+1;
+			}
 			buckets[i].end_range = begin + interval_numbers_bucket;
 			begin += interval_numbers_bucket;
 	  	}
@@ -197,20 +200,27 @@ void inicialize_buckets(Bucket * buckets, int bigger_number) {
 	  	int i;
 	  	for(i = 0; i < nbuckets; i++) {
 			buckets[i].id = i;
+
+			if(i == 0) {
+				buckets[i].begin_range = begin;
+			} else {
+				buckets[i].begin_range = begin+1;
+			}
+
 			if((nbuckets - remaining_elements-1) < i) {
-		  		buckets[i].begin_range = begin;
+
 		  		buckets[i].end_range = begin + interval_numbers_bucket+1;
 		  		begin += interval_numbers_bucket+1;
 
 			} else {
-		  		buckets[i].begin_range = begin;
+
 		  		buckets[i].end_range = begin + interval_numbers_bucket;
 		  		begin += interval_numbers_bucket;
 
 			}
 	  	}
 	}
-}
+} */
 
 int getIndexBucket(int value, int bigger_number) {
 	float itens_bucket = (float)bigger_number / (float)nbuckets;
