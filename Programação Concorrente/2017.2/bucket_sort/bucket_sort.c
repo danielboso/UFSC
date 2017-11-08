@@ -26,83 +26,30 @@ int main(int argc, char** argv) {
 	nprocs = atoi(argv[3]);
 	flag_print = atoi(argv[4]);
 
-	// ------ teste ------------------------------------------------------------
-	//printf("tamvet %d\n", tamvet);
-	//printf("nbuckets %d\n", nbuckets);
-	//printf("nprocs %d\n", nprocs);
-	//printf("flag_imprimir %d\n", flag_print);
-	// ------ teste ------------------------------------------------------------
-
 	int *vector = malloc(sizeof(int)*tamvet);
 	generateVector(vector, tamvet);
 
-	//
-
-	int i;
-
-	// Imprime vetor a ser
-	//for(i = 0; i < tamvet; i++) {
-	//	printf("vector[%d] = %d \n", i, vector[i]);
-	//}
-
-	// ------ teste ------------------------------------------------------------
-	//for(i = 0; i < tamvet; i++) {
-	//	printf("Elemento %d irá para o bucket %d \n", vector[i], getIndexBucket(vector[i]));
-	//}
-	// ------ teste ------------------------------------------------------------
-
 	Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
 	int bigger_number = vector[0];
+
+	int i;
 
 	for(i = 0; i < tamvet; i++) {
 		if(vector[i] > bigger_number) {
 			bigger_number = vector[i];
 		}
 	}
-	printf("bigger_number: 	%d\n", bigger_number);
-
-	//inicialize_buckets(buckets, bigger_number);
-
-	// ------ teste ------------------------------------------------------------
-	//for(i = 0; i < nbuckets; i++) {
-	//	printf("--------------------------\n");
-	//	printf("Bucket Id:		%d\n", buckets[i].id);
-	//	printf("Bucket Size: 		%d\n", buckets[i].size);
-	//	printf("Bucket Begin Range:	%d\n", buckets[i].begin_range);
-	//	printf("Bucket End Range 	%d\n", buckets[i].end_range);
-	//	printf("--------------------------\n");
-	//}
-	// ------ teste ------------------------------------------------------------
 
 	for(i = 0; i < tamvet; i++) {
 		int index =getIndexBucket(vector[i], bigger_number);
 		if (index >= nbuckets) {
 			index = nbuckets-1;
 		}
-		int value = vector[i];
-		//if()
-
 		int size_bucket = buckets[index].size;
 		buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
 		buckets[index].bucket[size_bucket] = vector[i];
-
-		// ------ teste ------------------------------------------------------------
-		//printf("elemento %d entrou no bucket %d \n", vector[i], index);
-		//printf("bucket %d -- elemento %d -- begin_range %d -- end_range %d \n", index, vector[i], buckets[index].begin_range, buckets[index].end_range);
-		// ------ teste ------------------------------------------------------------
-
 		buckets[index].size++;
-
 	}
-
-	// ------ teste ------------------------------------------------------------
-	//int j;
-	//for(i = 0; i < nbuckets; i++) {
-	//	for(j = 0; j < buckets[i].size; j++) {
-	//		printf("Bucket %d, elemento %d.\n", i, buckets[i].bucket[j]);
-	//	}
-	//}
-	// ------ teste ------------------------------------------------------------
 
 	int * index_bucket_in_tamvet = malloc(sizeof(int)*nbuckets);
 	int index = 0;
@@ -112,26 +59,11 @@ int main(int argc, char** argv) {
 		buckets[i].id = i;
 	}
 
-	// ------ teste ------------------------------------------------------------
-	//for(i = 0; i < nbuckets; i++) {
-	//	printf("posicao %d: começa %d\n", i, index_bucket_in_tamvet[i]);
-	//}
-	// ------ teste ------------------------------------------------------------
-
 	for(i = 0; i < nbuckets; i++) {
 		qsort(buckets[i].bucket, buckets[i].size, sizeof(int), cmpfunc);
 	}
 
-	// ------ teste ------------------------------------------------------------
-	//int j;
-	//for(i = 0; i < nbuckets; i++) {
-	//	for(j = 0; j < buckets[i].size; j++) {
-	//		printf("Bucket %d, elemento %d.\n", i, buckets[i].bucket[j]);
-	//	}
-	//}
-	// ------ teste ------------------------------------------------------------
-
-	// ------ teste ------------------------------------------------------------
+	// Pega os buckets e os coloca no vetor
 	int j;
 	for(i = 0; i < nbuckets; i++) {
 		int index_bucket = index_bucket_in_tamvet[buckets[i].id];
@@ -143,16 +75,6 @@ int main(int argc, char** argv) {
 			index_bucket++;
 		}
 	}
-	// ------ teste ------------------------------------------------------------
-
-	// ------ teste ------------------------------------------------------------
-	//for(i = 0; i < nbuckets; i++) {
-	//	printf("Bucket %d começa na posição %d \n", i, index_bucket_in_tamvet[i]);
-	//}
-	// ------ teste ------------------------------------------------------------
-
-	// O programa irá distribuir os buckets para os computadores os ordenem.
-	//
 
 	if(flag_print == 1) {
 		printf("[");
@@ -173,54 +95,8 @@ void generateVector(int *vector, int tamvet) {
 	srand(time(NULL));
 	for(i = 0; i < tamvet; i++) {
 		vector[i] = rand() % tamvet;
-		//printf("%d\n", vector[i]);
 	}
 }
-/*
-void inicialize_buckets(Bucket * buckets, int bigger_number) {
-	int interval_numbers_bucket = bigger_number / nbuckets;
-	//printf("interval_numbers_bucket %d\n", interval_numbers_bucket);
-	int remaining_elements = bigger_number % nbuckets;
-
-	int begin = 0;
-	if(remaining_elements == 0) {
-	  	int i;
-	  	for(i = 0; i < nbuckets; i++) {
-			buckets[i].id = i;
-			if(i == 0) {
-				buckets[i].begin_range = begin;
-			} else {
-				buckets[i].begin_range = begin+1;
-			}
-			buckets[i].end_range = begin + interval_numbers_bucket;
-			begin += interval_numbers_bucket;
-	  	}
-
-	} else {
-	  	int i;
-	  	for(i = 0; i < nbuckets; i++) {
-			buckets[i].id = i;
-
-			if(i == 0) {
-				buckets[i].begin_range = begin;
-			} else {
-				buckets[i].begin_range = begin+1;
-			}
-
-			if((nbuckets - remaining_elements-1) < i) {
-
-		  		buckets[i].end_range = begin + interval_numbers_bucket+1;
-		  		begin += interval_numbers_bucket+1;
-
-			} else {
-
-		  		buckets[i].end_range = begin + interval_numbers_bucket;
-		  		begin += interval_numbers_bucket;
-
-			}
-	  	}
-	}
-} */
 
 int getIndexBucket(int value, int bigger_number) {
 	float itens_bucket = (float)bigger_number / (float)nbuckets;
@@ -229,4 +105,15 @@ int getIndexBucket(int value, int bigger_number) {
 
 int cmpfunc (const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
+}
+
+int * serializable_bucket(Bucket * bucket) {
+	int * bucket_serialized = malloc(sizeof(int)*(bucket.size + 2));
+	bucket_serialized[0] = bucket.id;
+	bucket_serialized[1] = bucket.size;
+	int i;
+	for(i = 0; i < bucket.size-1; i++) {
+		bucket_serialized[i+2] = bucket[i];
+	}
+	return bucket_serialized;
 }
