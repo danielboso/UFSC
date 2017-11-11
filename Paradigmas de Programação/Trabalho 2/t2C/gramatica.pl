@@ -27,6 +27,23 @@
      - tartaruga
          Limpa os desenhos e reinicia no centro da tela (origem).
 
+<<<<<<< HEAD
+=======
+     - figclone id numero numero (ex: figclone 1 50 50)
+        'duplica a figura' - duplica a figura indicada pelo id, considerando
+        a nova coordenada absoluta inicial como sendo <X, Y>.
+     - figpf id numero (ex: figpf 1 50)
+        'translada a figura <Id> para <N> passos à frente'.
+     - figpt id numero (ex: figpt 1 50)
+        'translada a figura <Id> para <N> passos para trás'.
+     - figgd id numero (ex: figgd 1 45)
+        'rotaciona a figura <Id> em <A> graus no sentido horário a partir
+        de sua coordenada absoluta inicial'.
+     - figge id numero (ex: figge 1 45)
+        'rotaciona a figura <Id> e <A> graus no sentido anti-horário a partir
+        de sua coordenada absoluta incial'.
+
+>>>>>>> 9fb3a1e24107d29c610547d9ac5321d3ce2deaed
    Observacao:
      - Antes de executar um comando, e' necessario carregar 'programa.pl'
 */
@@ -43,15 +60,26 @@ comando --> [pf], [N],  { atom_number(N, X), parafrente(X) }.
 comando --> [pt], [N],  { atom_number(N, X), paratras(X) }.
 comando --> [gd], [G],  { atom_number(G, X), giradireita(X) }.
 comando --> [ge], [G],  { atom_number(G, X), giraesquerda(X) }.
+<<<<<<< HEAD
+=======
+comando --> [figclone], [Id], [X], [Y], { atom_number(Id, A), atom_number(X, B), atom_number(Y, C), figuraclone(A, B, C) }.
+comando --> [figpf], [Id], [N], { atom_number(Id, A), atom_number(N, B), figuraparafrente(A, B) }.
+comando --> [figpt], [Id], [N], { atom_number(Id, A), atom_number(N, B), figuraparatras(A, B) }.
+comando --> [figgd], [Id], [A], { atom_number(Id, X), atom_number(A, Y), figuragiradireita(X, Y) }.
+comando --> [figge], [Id], [A], { atom_number(Id, X), atom_number(A, Y), figuragiradireita(X, Y) }.
+>>>>>>> 9fb3a1e24107d29c610547d9ac5321d3ce2deaed
 comando --> [repita], [N], bloco_inicio, programa(N), bloco_fim.
 comando --> [un],  { usenada }.
 comando --> [ul],  { uselapis }.
 comando --> [tartaruga],  { tartaruga }.
 comando --> [meu], [T],  { atom_number(T, X), meudesenho(X) }.
 
+<<<<<<< HEAD
 comando --> [figclone], [N], { atom_number(N, Id, X, Y), figuraclone(Id, X, Y) }.
 
 
+=======
+>>>>>>> 9fb3a1e24107d29c610547d9ac5321d3ce2deaed
 
 %---------------------------------------------------
 

@@ -251,9 +251,9 @@ parafrente(N) :-
 	Active is 1,
 	marcainicio,
 	angle(A),
-	Alfa is A*pi/180,
-	X is N * cos(Alfa),
-	Y is -1 *  N * sin(Alfa),
+	Beta is A*pi/180,
+	X is N * cos(Beta),
+	Y is -1 *  N * sin(Beta),
 	xylast(Id, X_l, Y_l),
 	X_last is X_l + X,
 	Y_last is Y_l + Y,
@@ -267,9 +267,9 @@ parafrente(N) :-
 	Active is 0,
 	marcainicio,
 	angle(A),
-	Alfa is A*pi/180,
-	X is N * cos(Alfa),
-	Y is -1 *  N * sin(Alfa),
+	Beta is A*pi/180,
+	X is N * cos(Beta),
+	Y is -1 *  N * sin(Beta),
 	xylast(Id, X_l, Y_l),
 	X_last is X_l + X,
 	Y_last is Y_l + Y,
@@ -284,9 +284,9 @@ paratras(N) :-
 	Active is 1,
 	marcainicio,
 	angle(A),
-	Alfa is A*pi/180,
-    X is -1* N * cos(Alfa),
-	Y is N * sin(Alfa),
+	Beta is A*pi/180,
+    X is -1* N * cos(Beta),
+	Y is N * sin(Beta),
 	xylast(Id, X_l, Y_l),
 	X_last is X_l - X,
 	Y_last is Y_l + Y,
@@ -300,9 +300,9 @@ paratras(N) :-
 	Active is 0,
 	marcainicio,
 	angle(A),
-	Alfa is A*pi/180,
-    X is N * cos(Alfa),
-	Y is N * sin(Alfa),
+	Beta is A*pi/180,
+    X is N * cos(Beta),
+	Y is N * sin(Beta),
 	xylast(Id, X_l, Y_l),
 	X_last is X_l - X,
 	Y_last is Y_l + Y,
@@ -372,9 +372,9 @@ figuraclone(Id,X,Y) :-
 % translada a figura <Id> para <N> passos à frente
 figuraparafrente(Id, N) :-
 	angle(A),
-	Alfa is A*pi/180,
-	X is N * cos(Alfa),
-	Y is -1 *  N * sin(Alfa),
+	Beta is A*pi/180,
+	X is N * cos(Beta),
+	Y is -1 *  N * sin(Beta),
 	searchId(Id, Lista),
 	firstElement(Lista, Elemento),
 	[X_e, Y_e] = Elemento,
@@ -388,10 +388,10 @@ figuraparafrente(Id, N) :-
 % translada a figura <Id> para <N> passos para trás
 figuraparatras(Id, N) :-
 	angle(A),
-	Alfa is A*pi/180,
-    X is -1* N * cos(Alfa),
+	Beta is A*pi/180,
+    X is -1* N * cos(Beta),
 	write(x = X),nl,
-	Y is N * sin(Alfa),
+	Y is N * sin(Beta),
 	write(y = Y),nl,
 	searchId(Id, Lista),
 	firstElement(Lista, Elemento),
@@ -409,21 +409,19 @@ figuraparatras(Id, N) :-
 figuragiradireita_aux(Id, A, []).
 
 figuragiradireita_aux(Id, A, [H|T]) :-
-	[X_e, Y_e] = H,
-	N is sqrt(X_e**2 + Y_e**2),
-	B is atan(Y_e/X_e),
-	write(b = B), nl,
-	Alfa is (B-A)*pi/180,
-	X is N * cos(Alfa),
-	Y is -1*N * sin(Alfa),
-	Distancia_X is (X_e - X),
-	Distancia_Y is (Y - Y_e),
-	X_final is X_e - Distancia_X,
-	Y_final is Y_e + Distancia_Y,
-	assertz(xy(Id, X_final, Y_final)),
+	[OldX, OldY] = H,                  % Recupera as coordenadas da lista
+    Teta is A * pi/180,                % Converte Teta, de radianos para graus
+
+    % Rotaciona a imagem
+    X is (OldX * cos(Teta)) - (OldY * sin(Teta)),
+    Y is (OldX * sin(Teta)) + (OldY * cos(Teta)),
+
+	assertz(xy(Id, X, Y)),
 	figuragiradireita_aux(Id, A, T).
 
 figuragiradireita(Id, A) :-
+    write(id = Id), nl,
+    write(angulo = A), nl,
 	searchId(Id, Lista),
 	retractall(xy(Id, _, _)),
 	[F|Lista_coord_rel] = Lista,
@@ -435,7 +433,27 @@ figuragiradireita(Id, A) :-
 % Questao 5
 % rotaciona a figura <Id> em <A> graus no sentido anti-horário a partir de sua
 % coordenada absoluta inicial
-figuragiraesquerda(Id, A).
+figuragiraesquerda_aux(Id, A, []).
+
+figuragiraesquerda_aux(Id, A, [H|T]) :-
+	[OldX, OldY] = H,                  % Recupera as coordenadas da lista
+    Teta is -1 * A * pi/180,           % Converte Teta, de radianos para graus
+
+    % Rotaciona a imagem
+    X is (OldX * cos(Teta)) - (OldY * sin(Teta)),
+    Y is (OldX * sin(Teta)) + (OldY * cos(Teta)),
+
+	assertz(xy(Id, X, Y)),
+	figuragiraesquerda_aux(Id, A, T).
+
+figuragiraesquerda(Id, A) :-
+    searchId(Id, Lista),
+    retractall(xy(Id, _, _)),
+    [F|Lista_coord_rel] = Lista,
+    [X, Y] = F,
+    assert(xy(Id, X, Y)),
+    figuragiraesquerda_aux(Id, A, Lista_coord_rel),
+    !.
 
 
 testes :-
@@ -447,3 +465,5 @@ testes :-
 	cmd("un pt 150 ul"),
 	cmd("repita 12 [ pf 100 gd 150 ]"), % estrela ‘a direita
 	svg.
+
+gira :- cmd("figgd 1 15"), svg.
