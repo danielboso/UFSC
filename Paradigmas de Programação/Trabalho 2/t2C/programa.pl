@@ -420,6 +420,8 @@ figuragiradireita_aux(Id, A, [H|T]) :-
 	figuragiradireita_aux(Id, A, T).
 
 figuragiradireita(Id, A) :-
+    write(id = Id), nl,
+    write(angulo = A), nl,
 	searchId(Id, Lista),
 	retractall(xy(Id, _, _)),
 	[F|Lista_coord_rel] = Lista,
@@ -463,3 +465,5 @@ testes :-
 	cmd("un pt 150 ul"),
 	cmd("repita 12 [ pf 100 gd 150 ]"), % estrela ‘a direita
 	svg.
+
+gira :- cmd("figgd 1 15"), svg.
