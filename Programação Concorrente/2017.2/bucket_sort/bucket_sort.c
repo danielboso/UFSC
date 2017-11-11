@@ -16,8 +16,8 @@ int main(int argc, char** argv) {
 	int rank;
 
 	MPI_Init(&argc, &argv);
-	MPI_Comm_size(&size);
-	MPI_Comm_rank(&rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
 // -----------------------------------------------------------------------------
 // 		Mestre
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 		nprocs = atoi(argv[3]);
 		flag_print = atoi(argv[4]);
 
-		int *vector = malloc(sizeof(int)*tamvet);
+		int * vector = malloc(sizeof(int)*tamvet);
 		generateVector(vector, tamvet);
 
 		Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
@@ -72,19 +72,83 @@ int main(int argc, char** argv) {
 			buckets[i].id = i;
 		}
 
-		int bucket_to_send = 0;
-		int remaining_buckets = nbuckets;
+		// Id do bucket que será enviado
+		int id_bucket_to_send = 0;
+		// Quantidade de buckets que ainda devem ser enviadas para os processos
+		int buckets_to_send = nbuckets;
+		// Quantidade de buckets que se deve ficar esperando receber dos processos escravos
+		int buckets_to_receive = nbuckets;
+		// Flag que indica se posso continuar mandando buckets
+		// Processo recebe essa variável e a interpreta como se deve continuar esperando mais buckets
+		int flag_continue_sending = 1;
 
+		//----------------------------------------------------------------------
+		// Flags ---------------------------------------------------------------
+		// 0 : Indica que todos os buckets já foram computados
+		// 1 : Indica que ainda falta buckets para serem computados
+		//----------------------------------------------------------------------
+
+		// For que distribui primeira "leva" de buckets
 		for(i = 1; i < size && remaining_buckets != 0; i++) {
-			int * bucket = serializable_bucket(buckets[bucket_to_send]);
+			if(remaining_buckets == 0) {
+				flag_continue_sending = 0;
+			}
 
-			MPI_Send();
+			int control[2];
+			// -----------------------------------------------------------------
+			// vetor control ---------------------------------------------------
+			// 		Control[0] - id
+			// 		Control[1] - size
+			// -----------------------------------------------------------------
+			control[0] = buckets[bucket_to_send].id;
+			control[1] = buckets[bucket_to_send].size;
+
+			// Envia a flag
+			MPI_Send(&flag_continue_sending, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+
+			// Envia dados de controle
+			MPI_Send(&control, 2, MPI_INT, i, 0, MPI_COMM_WORLD);
+
+			// Envia vetor
+			MPI_Send(buckets[bucket_to_send].bucket, control[1], MPI_INT, i, 0, MPI_COMM_WORLD);
+
 			remaining_buckets--;
+			bucket_to_send++;
 		}
 
-		while(remaining_buckets != 0)  {
+		while(1) {
 
-			remaining_buckets--;
+			// Reconstrói vetor de controle
+			int control[2];
+
+			MPI_Status status;
+
+			MPI_Recv(&control, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+
+			MPI_Recv(&buckets[control[0].bucket], MPI_INT, control[1], status.MPI_Source, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+			if(buckets_to_send > 0) {
+
+				control[0] = buckets[bucket_to_send].id;
+				control[1] = buckets[bucket_to_send].size;
+
+				// Envia a flag
+				MPI_Send(&flag_continue_sending, 1, MPI_INT, status.MPI_Source, 0, MPI_COMM_WORLD);
+
+				// Envia dados de controle
+				MPI_Send(&control, 2, MPI_INT, status.MPI_Source, 0, MPI_COMM_WORLD);
+
+				// Envia vetor
+				MPI_Send(buckets[bucket_to_send].bucket, control[1], MPI_INT, status.MPI_Source, 0, MPI_COMM_WORLD);
+
+				remaining_buckets--;
+				buckets_to_send++;
+
+			} else {
+				// Manda mensagem para todos os processos pararem de aguardar mensagens
+				flag_continue_sending = 0;
+				MPI_Send(&flag_continue_sending, 1, MPI_INT, status.MPI_Source, 0, MPI_COMM_WORLD);
+			}
 		}
 
 		// Pega os buckets e os coloca no vetor
@@ -99,8 +163,6 @@ int main(int argc, char** argv) {
 				index_bucket++;
 			}
 		}
-
-
 
 		// ---------------------------------------------------------------------
 		// 	A partir daqui, todas os bucket já devem estar ordenados e devolvidos
@@ -118,13 +180,56 @@ int main(int argc, char** argv) {
 		free(vector);
 		free(buckets);
 
-// -----------------------------------------------------------------------------
-// 		Escravo
-// -----------------------------------------------------------------------------
-	} else { // Escravos
+	} else {
 
-		qsort(buckets[i].bucket, buckets[i].size, sizeof(int), cmpfunc);
+	// -------------------------------------------------------------------------
+	// 		Escravo
+	// -------------------------------------------------------------------------
+
+		int flag_continue_receiving;
+		while (1) {
+
+			// Atualiza valor da flag
+			MPI_Recv(&flag_continue_receiving, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+			if(continue_receiving == 1) {
+
+				// Aloca espaço para o bucket
+				int control[2];
+
+				// -------------------------------------------------------------
+				// vetor ontrol ------------------------------------------------
+				// 		Control[0] - id
+				// 		Control[1] - size
+				// -------------------------------------------------------------
+
+				// Recebe variáveis de controle
+				MPI_Recv(&control, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+				// Realoca espaço para os elementos do bucket
+				int * bucket = malloc(sizeof(int) * control[1])
+
+				// Recebe vetor
+				MPI_Recv(bucket.bucket, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+				// Ordena o vetor usando quick sort
+				qsort(bucket, control[1], sizeof(int), cmpfunc);
+
+				// Envia struct com variáveis de controle para o processo mestre
+				MPI_Send(&control, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD);
+
+				// Envia os elementos do bucket para o processo mestre
+				MPI_Send(bucket, control[1], MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD);
+
+				free(bucket);
+			} else {
+				break;
+			}
+		}
+
 	}
+
+	MPI_Finalize();
 
 	return 0;
 }
@@ -144,15 +249,4 @@ int getIndexBucket(int value, int bigger_number) {
 
 int cmpfunc (const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
-}
-
-int * serializable_bucket(Bucket * bucket) {
-	int * bucket_serialized = malloc(sizeof(int)*(bucket.size + 2));
-	bucket_serialized[0] = bucket.id;
-	bucket_serialized[1] = bucket.size;
-	int i;
-	for(i = 0; i < bucket.size-1; i++) {
-		bucket_serialized[i+2] = bucket[i];
-	}
-	return bucket_serialized;
 }
