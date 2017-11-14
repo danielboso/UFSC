@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 
 			// Envia dados de controle
 			MPI_Send(control, 2, MPI_INT, i, 0, MPI_COMM_WORLD);
-			printf("Message sent to process %d with bucket id %d\n", i, control[0]);
+			printf("Message sent to process %d with bucket id %d \n", i, control[0]);
 			printf("Message sent to process %d with bucket size %d\n", i, control[1]);
 
 			// Envia vetor
@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
 
 				// Envia a flag
 				MPI_Send(&flag_continue_sending, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
-				printf("Message sent to process %d with flag %d\n", i, flag_continue_sending);
+				printf("Message sent to process %d with flag %d\n", status.MPI_SOURCE, flag_continue_sending);
 
 				// Envia dados de controle
 				MPI_Send(control, 2, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
@@ -197,17 +197,15 @@ int main(int argc, char** argv) {
 	// 		Escravo
 	// -------------------------------------------------------------------------
 
-		int flag_continue_receiving;
+		int flag_continue_receiving = 1;
 
 		while(1) {
-			printf("escravo : %d\n", rank);
 
 			// Atualiza valor da flag
 			MPI_Recv(&flag_continue_receiving, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			printf("flag_continue_receiving : %d, %d\n", flag_continue_receiving, rank);
+			printf("Message received from process 0 with flag %d\n", flag_continue_receiving);
 
 			if(flag_continue_receiving == 1) {
-				printf("continue_receiving\n");
 
 				// Aloca espaço para o bucket
 				int * control = (int *)malloc(sizeof(int) * 2);
@@ -220,18 +218,15 @@ int main(int argc, char** argv) {
 
 				// Recebe variáveis de controle
 				MPI_Recv(control, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				printf("escravo recebeu control\n");
-				printf("aaa\n");
-				printf("control[0] :  %d\n", control[0]);
-				printf("control[1] :  %d\n", control[1]);
-				fflush(stdout);
-
+				printf("Message received from process %d with control id %d\n", 0, control[0]);
+				printf("Message received from process %d with contorl size%d\n", 0, control[1]);
 
 				// Realoca espaço para os elementos do bucket
 				int * bucket = malloc(sizeof(int) * control[1]);
 
 				// Recebe vetor
 				MPI_Recv(bucket, control[1], MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				printf("Message received from process %d with bucket \n", 0);
 				//--------------------------------------------------------------
 				//--------------------------------------------------------------
 				//--------------------------------------------------------------
@@ -241,8 +236,6 @@ int main(int argc, char** argv) {
 
 				// Ordena o vetor usando quick sort
 				qsort(bucket, control[1], sizeof(int), cmpfunc);
-				printf("aaaa\n");
-				fflush(stdout);
 
 				// Envia struct com variáveis de controle para o processo mestre
 				MPI_Send(control, 2, MPI_INT, 0, 0, MPI_COMM_WORLD);
@@ -257,9 +250,8 @@ int main(int argc, char** argv) {
 				fflush(stdout);
 				break;
 			}
-			break;
 		}
-		printf("escravo aqui %d \n", rank);
+		printf("Processo escravo com rank %d terminou de executar while(1) \n", rank);
 	}
 
 	MPI_Finalize();
