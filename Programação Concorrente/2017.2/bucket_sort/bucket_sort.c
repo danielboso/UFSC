@@ -28,39 +28,25 @@ int main(int argc, char** argv) {
 			printf("Parâmetros:\n");
 			printf("	Tamanho do vetor.\n");
 			printf("	Número de buckets.\n");
-			//printf("	Número de processos.\n");
 			printf("	Imprimir? '0' para não imprimir e '1' para imprimir.\n");
 			return 0;
 		}
 
 		tamvet = atoi(argv[1]);
-		//nbuckets = atoi(argv[2]);
-		nprocs = atoi(argv[3]);
-		flag_print = atoi(argv[4]);
+		nbuckets = atoi(argv[2]);
+		flag_print = atoi(argv[3]);
 
 		int * vector = malloc(sizeof(int)*tamvet);
 		generateVector(vector, tamvet);
-
-		Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
 		int bigger_number = vector[0];
 
-		int i;
+		Bucket * buckets = malloc(sizeof(Bucket) * nbuckets);
 
+		int i;
 		for(i = 0; i < tamvet; i++) {
 			if(vector[i] > bigger_number) {
 				bigger_number = vector[i];
 			}
-		}
-
-		for(i = 0; i < tamvet; i++) {
-			int index = getIndexBucket(vector[i], bigger_number);
-			if (index >= nbuckets) {
-				index = nbuckets-1;
-			}
-			int size_bucket = buckets[index].size;
-			buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
-			buckets[index].bucket[size_bucket] = vector[i];
-			buckets[index].size++;
 		}
 
 		int * index_bucket_in_tamvet = malloc(sizeof(int)*nbuckets);
@@ -69,6 +55,20 @@ int main(int argc, char** argv) {
 			index_bucket_in_tamvet[i] = index;
 			index += buckets[i].size;
 			buckets[i].id = i;
+			buckets[i].size = 0;
+			buckets[i].bucket = NULL;
+		}
+
+		for(i = 0; i < tamvet; i++) {
+			int index = getIndexBucket(vector[i], bigger_number);
+			if (index >= nbuckets) {
+				index = nbuckets-1;
+			}
+
+			int size_bucket = buckets[index].size;
+			buckets[index].bucket = realloc(buckets[index].bucket, sizeof(int) * (size_bucket+1));
+			buckets[index].bucket[size_bucket] = vector[i];
+			buckets[index].size++;
 		}
 
 		// Id do bucket que será enviado
@@ -89,11 +89,9 @@ int main(int argc, char** argv) {
 
 		// For que distribui primeira "leva" de buckets
 		for(i = 1; i < nprocs && amount_buckets_to_send != 0; i++) {
-			if(amount_buckets_to_send == 0) {
-				flag_continue_sending = 0;
-			}
 
-			int control[2];
+			//int control[2];
+			int * control = malloc(sizeof(int) *2);
 			// -----------------------------------------------------------------
 			// vetor control ---------------------------------------------------
 			// 		Control[0] - id
@@ -104,41 +102,53 @@ int main(int argc, char** argv) {
 
 			// Envia a flag
 			MPI_Send(&flag_continue_sending, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+			printf("Message sent to process %d with flag %d\n", i, flag_continue_sending);
 
 			// Envia dados de controle
-			MPI_Send(&control, 2, MPI_INT, i, 0, MPI_COMM_WORLD);
+			MPI_Send(control, 2, MPI_INT, i, 0, MPI_COMM_WORLD);
+			printf("Message sent to process %d with bucket id %d\n", i, control[0]);
+			printf("Message sent to process %d with bucket size %d\n", i, control[1]);
 
 			// Envia vetor
 			MPI_Send(buckets[id_bucket_to_send].bucket, control[1], MPI_INT, i, 0, MPI_COMM_WORLD);
+			printf("Message sent to process %d with bucket \n", i);
 
 			amount_buckets_to_send--;
 			id_bucket_to_send++;
 		}
 
 		while(1) {
-
 			// Reconstrói vetor de controle
-			int control[2];
+			int * control = malloc(sizeof(int) * 2);
 
 			MPI_Status status;
 
-			MPI_Recv(&control, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+			MPI_Recv(control, 2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+			printf("Message received from process %d with control id %d\n", status.MPI_SOURCE, control[0]);
+			printf("Message received from process %d with contorl size%d\n", status.MPI_SOURCE, control[1]);
 
+			fflush(stdout);
 			MPI_Recv(buckets[control[0]].bucket, control[1], MPI_INT, status.MPI_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			printf("Message received from process %d with bucket \n", status.MPI_SOURCE);
 
 			if(amount_buckets_to_send > 0) {
+				printf("id_bucket_to_send %d\n", id_bucket_to_send);
 
 				control[0] = buckets[id_bucket_to_send].id;
 				control[1] = buckets[id_bucket_to_send].size;
 
 				// Envia a flag
 				MPI_Send(&flag_continue_sending, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+				printf("Message sent to process %d with flag %d\n", i, flag_continue_sending);
 
 				// Envia dados de controle
-				MPI_Send(&control, 2, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+				MPI_Send(control, 2, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+				printf("Message sent to process %d with bucket id %d\n", status.MPI_SOURCE, control[0]);
+				printf("Message sent to process %d with bucket size %d\n", status.MPI_SOURCE, control[1]);
 
 				// Envia vetor
 				MPI_Send(buckets[id_bucket_to_send].bucket, control[1], MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+				printf("Message sent to process %d with bucket \n", status.MPI_SOURCE);
 
 				amount_buckets_to_send--;
 				id_bucket_to_send++;
@@ -147,7 +157,9 @@ int main(int argc, char** argv) {
 				// Manda mensagem para todos os processos pararem de aguardar mensagens
 				flag_continue_sending = 0;
 				MPI_Send(&flag_continue_sending, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
+				break;
 			}
+			free(control);
 		}
 
 		// Pega os buckets e os coloca no vetor
@@ -163,11 +175,6 @@ int main(int argc, char** argv) {
 			}
 		}
 
-		// ---------------------------------------------------------------------
-		// 	A partir daqui, todas os bucket já devem estar ordenados e devolvidos
-		// para o mestre.
-		// ---------------------------------------------------------------------
-
 		if(flag_print == 1) {
 			printf("[");
 			for(i = 0; i < tamvet; i++) {
@@ -176,8 +183,13 @@ int main(int argc, char** argv) {
 			printf("]\n");
 		}
 
+		for(i = 0; i < nbuckets; i++) {
+			free(buckets[i].bucket);
+		}
+
 		free(vector);
 		free(buckets);
+		free(index_bucket_in_tamvet);
 
 	} else {
 
@@ -186,50 +198,73 @@ int main(int argc, char** argv) {
 	// -------------------------------------------------------------------------
 
 		int flag_continue_receiving;
-		while (1) {
+
+		while(1) {
+			printf("escravo : %d\n", rank);
 
 			// Atualiza valor da flag
 			MPI_Recv(&flag_continue_receiving, 1, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			printf("flag_continue_receiving : %d, %d\n", flag_continue_receiving, rank);
 
 			if(flag_continue_receiving == 1) {
+				printf("continue_receiving\n");
 
 				// Aloca espaço para o bucket
-				int control[2];
+				int * control = (int *)malloc(sizeof(int) * 2);
 
 				// -------------------------------------------------------------
-				// vetor ontrol ------------------------------------------------
+				// vetor control -----------------------------------------------
 				// 		Control[0] - id
 				// 		Control[1] - size
 				// -------------------------------------------------------------
 
 				// Recebe variáveis de controle
-				MPI_Recv(&control, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				MPI_Recv(control, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				printf("escravo recebeu control\n");
+				printf("aaa\n");
+				printf("control[0] :  %d\n", control[0]);
+				printf("control[1] :  %d\n", control[1]);
+				fflush(stdout);
+
 
 				// Realoca espaço para os elementos do bucket
 				int * bucket = malloc(sizeof(int) * control[1]);
 
 				// Recebe vetor
-				MPI_Recv(bucket, 1, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				MPI_Recv(bucket, control[1], MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				//--------------------------------------------------------------
+				//--------------------------------------------------------------
+				//--------------------------------------------------------------
+				//--------------------------------------------------------------
+				//--------------------------------------------------------------
+				//--------------------------------------------------------------
 
 				// Ordena o vetor usando quick sort
 				qsort(bucket, control[1], sizeof(int), cmpfunc);
+				printf("aaaa\n");
+				fflush(stdout);
 
 				// Envia struct com variáveis de controle para o processo mestre
-				MPI_Send(&control, 2, MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD);
+				MPI_Send(control, 2, MPI_INT, 0, 0, MPI_COMM_WORLD);
 
 				// Envia os elementos do bucket para o processo mestre
-				MPI_Send(bucket, control[1], MPI_INT, 0, MPI_ANY_TAG, MPI_COMM_WORLD);
+				MPI_Send(bucket, control[1], MPI_INT, 0, 0, MPI_COMM_WORLD);
 
 				free(bucket);
+				free(control);
 			} else {
+				printf("Escravo %d break\n", rank);
+				fflush(stdout);
 				break;
 			}
+			break;
 		}
-
+		printf("escravo aqui %d \n", rank);
 	}
 
 	MPI_Finalize();
 
+	printf("Processo %d finalizou\n", rank);
 	return 0;
 }
 
